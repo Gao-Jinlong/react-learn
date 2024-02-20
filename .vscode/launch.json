@@ -1,0 +1,17 @@
+{
+  // 使用 IntelliSense 了解相关属性。
+  // 悬停以查看现有属性的描述。
+  // 欲了解更多信息，请访问: https://go.microsoft.com/fwlink/?linkid=830387
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "type": "chrome",
+      "runtimeExecutable": "canary", // 使用 Chrome Canary
+      "request": "launch",
+      "name": "针对 localhost 启动 Chrome",
+      "url": "http://localhost:3000",
+      "webRoot": "${workspaceFolder}",
+      "userDataDir": true // 用户数据目录，false表示使用默认目录，同一个目录只能有一个 chrome 实例
+    }
+  ]
+}
