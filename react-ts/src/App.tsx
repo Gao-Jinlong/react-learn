@@ -10,7 +10,6 @@ import React, {
   useReducer,
   useRef,
 } from "react";
-import logo from "./logo.svg";
 import "./App.css";
 
 interface AaaProps {

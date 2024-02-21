@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useImperativeHandle, useRef, useState } from "react";
 import "./index.css";
 
 const monthNames = [
@@ -20,7 +20,14 @@ interface CalendarProps {
   value?: Date;
   onChange?: (date: Date) => void;
 }
-const Calendar: React.FC<CalendarProps> = (props) => {
+interface CalendarRef {
+  getDate: () => Date;
+  setDate: (date: Date) => void;
+}
+const Calendar: React.ForwardRefRenderFunction<CalendarRef, CalendarProps> = (
+  props,
+  ref
+) => {
   const { value = new Date(), onChange } = props;
 
   const [date, setDate] = useState(value);
@@ -28,7 +35,6 @@ const Calendar: React.FC<CalendarProps> = (props) => {
   const handlePreMonth = () => {
     setDate(new Date(date.getFullYear(), date.getMonth() - 1, 1));
   };
-
   const handleNextMonth = () => {
     setDate(new Date(date.getFullYear(), date.getMonth() + 1, 1));
   };
@@ -45,8 +51,17 @@ const Calendar: React.FC<CalendarProps> = (props) => {
     const daysCount = daysOfMonth(date.getFullYear(), date.getMonth());
     const firstDay = firstDayOfMonth(date.getFullYear(), date.getMonth());
 
+    const lastMonthDaysCount = daysOfMonth(
+      date.getMonth() === 0 ? date.getFullYear() - 1 : date.getFullYear(),
+      date.getMonth() === 0 ? 11 : date.getMonth() - 1
+    );
+
     for (let i = 0; i < firstDay; i++) {
-      days.push(<div key={i} className="empty"></div>);
+      days.push(
+        <div key={`last-${i}`} className="day disabled">
+          {lastMonthDaysCount - firstDay + i + 1}
+        </div>
+      );
     }
 
     for (let i = 1; i <= daysCount; i++) {
@@ -70,8 +85,27 @@ const Calendar: React.FC<CalendarProps> = (props) => {
       }
     }
 
+    for (let i = 1; i <= 35 - daysCount - firstDay; i++) {
+      days.push(
+        <div key={`next-${i}`} className="day disabled">
+          {i}
+        </div>
+      );
+    }
+
     return days;
   };
+
+  useImperativeHandle(ref, () => {
+    return {
+      getDate() {
+        return date;
+      },
+      setDate(date: Date) {
+        setDate(date);
+      },
+    };
+  });
 
   return (
     <div className="calendar">
@@ -95,17 +129,29 @@ const Calendar: React.FC<CalendarProps> = (props) => {
     </div>
   );
 };
+const WrappedCalendar = React.forwardRef(Calendar);
 
 function App() {
+  const calendarRef = useRef<CalendarRef>(null);
+
+  useEffect(() => {
+    console.log(calendarRef.current?.getDate().toLocaleDateString());
+
+    setTimeout(() => {
+      calendarRef.current?.setDate(new Date(2024, 3, 1));
+    }, 3000);
+  }, []);
+
   return (
     <div className="App">
-      <Calendar
+      <WrappedCalendar
         value={new Date("2024-02-21")}
         onChange={(date: Date) => {
           console.log("onChange", date);
         }}
       />
-      <Calendar
+      <WrappedCalendar
+        ref={calendarRef}
         value={new Date("2023-08-07")}
         onChange={(date: Date) => {
           console.log("onChange", date);

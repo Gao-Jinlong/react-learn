@@ -29,3 +29,7 @@
   background-color: #ccc;
   cursor: pointer;
 }
+
+.disabled {
+  color: #ccc
+}
