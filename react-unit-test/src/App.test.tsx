@@ -53,4 +53,5 @@ test("useCounter", async () => {
   expect(hook.result.current[0]).toBe(1);
 
   hook.unmount();
+  // test
 });
