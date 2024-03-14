@@ -1,7 +1,17 @@
-import { CSSProperties, FC, ReactNode, useEffect } from "react";
+import {
+  CSSProperties,
+  FC,
+  ReactNode,
+  forwardRef,
+  useEffect,
+  useImperativeHandle,
+  useMemo,
+} from "react";
 import useStore from "./useStore";
 import { TransitionGroup, CSSTransition } from "react-transition-group";
 import "./index.scss";
+import { createPortal } from "react-dom";
+import { useTimer } from "./useTimer";
 export type Position = "top" | "bottom";
 
 export interface MessageProps {
@@ -11,53 +21,99 @@ export interface MessageProps {
   duration?: number;
   id?: number;
   position?: Position;
+  onClose?: (id: number) => void;
+}
+export interface MessageRef {
+  add: (messageProps: MessageProps) => number;
+  remove: (id: number) => void;
+  update: (id: number, messageProps: MessageProps) => void;
+  clearAll: () => void;
 }
 
-export const MessageProvider: FC<{}> = (props) => {
+const MessageItem: FC<MessageProps> = (item) => {
+  const { onMouseEnter, onMouseLeave } = useTimer({
+    id: item.id!,
+    duration: item.duration,
+    remove: item.onClose!,
+  });
+
+  return (
+    <div
+      className="message-item"
+      onMouseEnter={onMouseEnter}
+      onMouseLeave={onMouseLeave}
+    >
+      {item.content}
+    </div>
+  );
+};
+
+export const MessageProvider = forwardRef<MessageRef, {}>((props, ref) => {
   const { messageList, add, update, remove, clearAll } = useStore("top");
 
-  useEffect(() => {
-    setInterval(() => {
-      add({
-        content: Math.random().toString().slice(2, 8),
-      });
-    }, 2000);
-  });
+  if ("current" in ref!) {
+    ref.current = {
+      add,
+      update,
+      remove,
+      clearAll,
+    };
+  }
+  // useImperativeHandle 的执行时机是在组件渲染的时候，会导致从 useMessage 中取到的 messageRef.current 为 null，所以这里不使用 useImperativeHandle
+  // useImperativeHandle(ref, () => {
+  //   return {
+  //     add,
+  //     update,
+  //     remove,
+  //     clearAll,
+  //   };
+  // });
+
+  // useEffect(() => {
+  //   setInterval(() => {
+  //     add({
+  //       content: Math.random().toString().slice(2, 8),
+  //     });
+  //   }, 2000);
+  // }, []);
 
   const positions = Object.keys(messageList) as Position[];
 
-  return (
+  const messageWrapper = (
     <div className="message-wrapper">
       {positions.map((direction) => {
         return (
-          <TransitionGroup
-            className={`message-wrapper-${direction}`}
-            key={direction}
-          >
-            {messageList.top.map((item) => {
-              return (
-                <CSSTransition
-                  key={item.id}
-                  timeout={1000}
-                  classNames="message"
-                >
-                  <div
-                    className="message-item"
-                    style={{
-                      width: 100,
-                      lineHeight: "30px",
-                      border: "1px solid #000",
-                      margin: "20px",
-                    }}
+          <div className={`message-wrapper-${direction}`} key={direction}>
+            <TransitionGroup>
+              {messageList[direction].map((item) => {
+                return (
+                  <CSSTransition
+                    key={item.id}
+                    timeout={1000}
+                    classNames="message"
                   >
-                    {item.content}
-                  </div>
-                </CSSTransition>
-              );
-            })}
-          </TransitionGroup>
+                    <MessageItem
+                      onClose={remove}
+                      {...item}
+                      className="message-item"
+                    ></MessageItem>
+                  </CSSTransition>
+                );
+              })}
+            </TransitionGroup>
+          </div>
         );
       })}
     </div>
   );
-};
+
+  const el = useMemo(() => {
+    const el = document.createElement("div");
+    el.className = "wrapper";
+
+    document.body.appendChild(el);
+    return el;
+  }, []);
+
+  return createPortal(messageWrapper, el);
+});
