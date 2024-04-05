@@ -1,0 +1,14 @@
+.btn-wrapper {
+  padding: 10px;
+
+  :global {
+    // 多层嵌套时仅编译最外层的，:global 包裹的样式不会被编译
+    .btn {
+      background: red;
+    }
+  }
+}
+
+.btn {
+  background: green;
+}
