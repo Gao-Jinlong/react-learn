@@ -101,8 +101,8 @@ export default function Popover(props: PopoverProps) {
     }),
   });
 
-  const interaction =
-    trigger === "hover" ? useHover(context) : useClick(context);
+  const interactionHook = trigger === "hover" ? useHover : useClick;
+  const interaction = interactionHook(context);
 
   const dismiss = useDismiss(context);
 
