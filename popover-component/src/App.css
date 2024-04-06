@@ -1,0 +1,13 @@
+#root {
+  width: 2280px;
+  height: 2280px;
+  display: flex;
+  place-content: center;
+  place-items: center;
+}
+
+.popover-floating {
+  padding: 4px 8px;
+  border: 1px solid #000;
+  border-radius: 4px;
+}
