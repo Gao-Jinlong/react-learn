@@ -5,4 +5,12 @@
   border: 1px solid #000;
   margin: 10px;
   cursor: move;
+
+  background: yellow;
+  border: 1px solid black;
+}
+
+.dragging {
+  border-style: dashed;
+  background: transparent;
 }
