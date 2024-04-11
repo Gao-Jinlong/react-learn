@@ -1,4 +1,4 @@
-import React, { CSSProperties, useEffect, useState } from "react";
+import React, { CSSProperties, useCallback, useEffect, useState } from "react";
 import "./index.scss";
 
 interface MaskProps {
@@ -11,20 +11,35 @@ export const Mask: React.FC<MaskProps> = (props) => {
 
   const [style, setStyle] = useState<CSSProperties>({});
 
-  useEffect(() => {
-    if (!element) {
-      return;
+  function updateStyleByAnimationFrame() {
+    let animationId = 0;
+    function updateStyle() {
+      if (element) {
+        const style = getMaskStyle(
+          element,
+          container || document.documentElement
+        );
+        setStyle(style);
+      }
     }
 
-    element.scrollIntoView({
-      block: "center",
-      inline: "center",
-    });
+    return () => {
+      cancelAnimationFrame(animationId);
+      animationId = requestAnimationFrame(() => {
+        updateStyle();
+        animationId = 0;
+      });
+    };
+  }
 
-    const style = getMaskStyle(element, container || document.documentElement);
+  const updateStyleWrapper = useCallback(updateStyleByAnimationFrame(), [
+    container,
+    element,
+  ]);
 
-    setStyle(style);
-  }, [container, element]);
+  useEffect(updateStyleWrapper, [container, element]);
+
+  window.addEventListener("resize", updateStyleWrapper);
 
   const getContent = () => {
     if (!renderMaskContent) {
