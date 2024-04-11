@@ -1,22 +1,44 @@
 import classNames from "classnames";
-import { useEffect, useRef } from "react";
-import { useDrag } from "react-dnd";
+import { useEffect, useRef, useState } from "react";
+import { useDrag, useDrop } from "react-dnd";
+import { ListItem, useTodoListStore } from "./Store";
 
-export default function Item() {
+interface ItemProps {
+  data: ListItem;
+}
+export default function Item(props: ItemProps) {
+  const { content, status, id } = props.data;
+
+  const [editing, setEditing] = useState(false);
+
+  const [editingContent, setEditingContent] = useState(content);
+
+  const updateItem = useTodoListStore((state) => state.updateItem);
+  const swapItem = useTodoListStore((state) => state.swapItem);
+
   const ref = useRef<HTMLDivElement>(null);
 
   const [{ dragging }, drag] = useDrag({
     type: "list-item",
-    item: {},
+    item: {
+      id: id,
+    },
     collect(monitor) {
       return {
         dragging: monitor.isDragging(),
       };
     },
   });
+  const [, drop] = useDrop({
+    accept: "list-item",
+    hover(item: { id: ListItem["id"] }) {
+      swapItem(item.id, id);
+    },
+  });
 
   useEffect(() => {
     drag(ref);
+    drop(ref);
   }, []);
 
   return (
@@ -28,9 +50,40 @@ export default function Item() {
         "text-xl tracking-wide",
         dragging ? "bg-white border-dashed" : ""
       )}
+      onDoubleClick={() => {
+        setEditing(true);
+      }}
     >
-      <input type="checkbox" className="w-8 h-8 mr-2" />
-      <p>待办事项</p>
+      <input
+        type="checkbox"
+        checked={status === "done"}
+        className="w-8 h-8 mr-2"
+        onChange={(e) => {
+          updateItem({
+            ...props.data,
+            status: e.target.checked ? "done" : "todo",
+          });
+        }}
+      />
+      <p>
+        {editing ? (
+          <input
+            value={editingContent}
+            onChange={(e) => {
+              setEditingContent(e.target.value);
+            }}
+            onBlur={() => {
+              setEditing(false);
+              updateItem({
+                ...props.data,
+                content: editingContent,
+              });
+            }}
+          />
+        ) : (
+          content
+        )}
+      </p>
     </div>
   );
 }

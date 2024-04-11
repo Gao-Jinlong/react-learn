@@ -1,18 +1,24 @@
 import classNames from "classnames";
 import { FC, useEffect, useRef } from "react";
 import { useDrop } from "react-dnd";
+import { useTodoListStore } from "./Store";
+import { ListItem } from "./Store";
 
 interface GarbageProps {
   className?: string | string[];
 }
 
 export const GarbageBin: FC<GarbageProps> = (props) => {
+  const deleteItem = useTodoListStore((state) => state.deleteItem);
+
   const ref = useRef<HTMLDivElement>(null);
 
   const [{ isOver }, drop] = useDrop(() => {
     return {
       accept: "list-item",
-      drop(item) {},
+      drop(item: { id: ListItem["id"] }) {
+        deleteItem(item.id);
+      },
       collect(monitor) {
         return {
           isOver: monitor.isOver(),
