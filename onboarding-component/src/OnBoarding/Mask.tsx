@@ -5,41 +5,58 @@ interface MaskProps {
   element: HTMLElement;
   container?: HTMLElement;
   renderMaskContent?: (wrapper: React.ReactNode) => React.ReactNode;
+  onAnimationStart?: () => void;
+  onAnimationEnd?: () => void;
 }
 export const Mask: React.FC<MaskProps> = (props) => {
-  const { element, renderMaskContent, container } = props;
+  const {
+    element,
+    renderMaskContent,
+    container,
+    onAnimationStart,
+    onAnimationEnd,
+  } = props;
 
   const [style, setStyle] = useState<CSSProperties>({});
 
-  function updateStyleByAnimationFrame() {
-    let animationId = 0;
-    function updateStyle() {
-      if (element) {
-        const style = getMaskStyle(
-          element,
-          container || document.documentElement
-        );
-        setStyle(style);
-      }
-    }
+  useEffect(() => {
+    onAnimationStart?.();
+    const timer = setTimeout(() => {
+      onAnimationEnd?.();
+    }, 300);
 
     return () => {
-      cancelAnimationFrame(animationId);
-      animationId = requestAnimationFrame(() => {
-        updateStyle();
-        animationId = 0;
-      });
+      clearTimeout(timer);
     };
-  }
+  }, [element]);
 
-  const updateStyleWrapper = useCallback(updateStyleByAnimationFrame(), [
-    container,
-    element,
-  ]);
+  useEffect(() => {
+    if (!element) {
+      return;
+    }
 
-  useEffect(updateStyleWrapper, [container, element]);
+    element.scrollIntoView({
+      block: "center",
+      inline: "center",
+    });
 
-  window.addEventListener("resize", updateStyleWrapper);
+    const style = getMaskStyle(element, container || document.documentElement);
+
+    setStyle(style);
+  }, [element, container]);
+
+  useEffect(() => {
+    const observer = new ResizeObserver(() => {
+      const style = getMaskStyle(
+        element,
+        container || document.documentElement
+      );
+
+      setStyle(style);
+    });
+
+    observer.observe(container || document.documentElement);
+  }, [element, container]);
 
   const getContent = () => {
     if (!renderMaskContent) {
@@ -68,10 +85,13 @@ function getMaskStyle(
   element: HTMLElement,
   container: HTMLElement
 ): CSSProperties {
-  const { left, top, bottom, right } = element.getBoundingClientRect();
+  const rect = element.getBoundingClientRect();
+  const { top, left, bottom, right } = rect;
 
   const elementTopWithScroll = container.scrollTop + top;
   const elementLeftWithScroll = container.scrollLeft + left;
+  const elementBottomWithScroll = container.scrollTop + bottom;
+  const elementRightWithScroll = container.scrollLeft + right;
 
   return {
     width: container.scrollWidth,
@@ -79,13 +99,11 @@ function getMaskStyle(
     borderTopWidth: Math.max(elementTopWithScroll, 0),
     borderLeftWidth: Math.max(elementLeftWithScroll, 0),
     borderBottomWidth: Math.max(
-      container.scrollHeight - bottom,
-      elementTopWithScroll,
+      container.scrollHeight - elementBottomWithScroll,
       0
     ),
     borderRightWidth: Math.max(
-      container.scrollWidth - right,
-      elementLeftWithScroll,
+      container.scrollWidth - elementRightWithScroll,
       0
     ),
   };
