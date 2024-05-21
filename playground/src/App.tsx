@@ -1,4 +1,4 @@
-import "./App.css";
+import "./App.scss";
 import ReactPlayground from "./ReactPlayground";
 
 function App() {
