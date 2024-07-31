@@ -34,45 +34,6 @@ export default function Preview() {
     }
   }, []);
 
-  const canvasRef = useRef<HTMLCanvasElement>(null);
-  const context = useRef<CanvasRenderingContext2D>();
-
-  useEffect(() => {
-    const canvas = canvasRef.current;
-    context.current = canvas!.getContext("2d")!;
-
-    if (canvas && context.current) {
-      context.current.clearRect(0, 0, canvas.width, canvas.height);
-      context.current.fillStyle = "#000";
-      context.current.fillRect(0, 0, canvas.width, canvas.height);
-    }
-  }, []);
-
-  useEffect(() => {
-    const htmlCanvas = document.createElement("canvas");
-    const offscreen = htmlCanvas.transferControlToOffscreen();
-
-    const worker = new Worker(
-      new URL("./offscreenRender.worker", import.meta.url),
-      {
-        type: "module",
-      }
-    );
-
-    worker.addEventListener("message", (event) => {
-      const data = event.data;
-      const { type, bitmap } = data;
-
-      if (type === "bitmap") {
-        context.current?.clearRect(0, 0, htmlCanvas.width, htmlCanvas.height);
-        context.current!.drawImage(bitmap, 0, 0);
-      }
-    });
-    worker.postMessage({ offscreen, type: "offscreen" }, [offscreen]);
-
-    return () => worker.terminate();
-  }, []);
-
   const debouncePostMessage = useMemo(
     () =>
       debounce(() => {
@@ -122,39 +83,23 @@ export default function Preview() {
   }, []);
 
   return (
-    <>
-      <div style={{ height: "100%" }}>
-        <iframe
-          src={iframeUrl}
-          style={{
-            width: "100%",
-            height: "100%",
-            padding: 0,
-            border: "none",
-          }}
-        />
-        <Message type="error" content={error} />
+    <div style={{ height: "100%" }}>
+      <iframe
+        src={iframeUrl}
+        style={{
+          width: "100%",
+          height: "100%",
+          padding: 0,
+          border: "none",
+        }}
+      />
+      <Message type="error" content={error} />
 
-        {/* <Editor file={{
+      {/* <Editor file={{
             name: 'dist.js',
             value: compiledCode,
             language: 'javascript'
         }}/> */}
-      </div>
-      <div>
-        <canvas
-          ref={canvasRef}
-          style={{
-            position: "absolute",
-            top: 0,
-            left: 0,
-            width: "200px",
-            height: "200px",
-            zIndex: 1,
-            pointerEvents: "none",
-          }}
-        ></canvas>
-      </div>
-    </>
+    </div>
   );
 }
