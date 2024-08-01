@@ -45,11 +45,6 @@ import {
 //         setCreating(true)
 //     }
 
-//     const handleRemove = (name: string) => {
-//         removeFile(name)
-//         setSelectedFileName(ENTRY_FILE_NAME)
-//     }
-
 //     const readonlyFileNames = [ENTRY_FILE_NAME, IMPORT_MAP_FILE_NAME, APP_COMPONENT_FILE_NAME];
 
 //     return <div className={styles.tabs}>
@@ -75,7 +70,13 @@ import {
 // }
 
 export default function FileNameList() {
-  const { files } = useContext(PlaygroundContext);
+  const {
+    files,
+    setSelectedFileName,
+    selectedFileName,
+    updateFileName,
+    removeFile,
+  } = useContext(PlaygroundContext);
 
   const [tabs, setTabs] = useState<string[]>([""]);
 
@@ -91,6 +92,18 @@ export default function FileNameList() {
     APP_COMPONENT_FILE_NAME,
   ];
 
+  const handleEditComplete = (name: string, prevName: string) => {
+    updateFileName(prevName, name);
+    setSelectedFileName(name);
+
+    setCreating(false);
+  };
+
+  const handleRemove = (name: string) => {
+    removeFile(name);
+    setSelectedFileName(ENTRY_FILE_NAME);
+  };
+
   return (
     <div className={styles.tabs}>
       {tabs.map((item, index, arr) => (
@@ -99,6 +112,10 @@ export default function FileNameList() {
           value={item}
           readonly={readonlyFileNames.includes(item)}
           creating={creating && index === arr.length - 1}
+          onClick={() => setSelectedFileName(item)}
+          actived={selectedFileName === item}
+          onEditComplete={(name: string) => handleEditComplete(name, item)}
+          onRemove={() => handleRemove(item)}
         ></FileNameItem>
       ))}
     </div>

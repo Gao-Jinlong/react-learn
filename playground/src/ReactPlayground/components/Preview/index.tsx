@@ -6,6 +6,7 @@ import { IMPORT_MAP_FILE_NAME } from "../../files";
 import { Message } from "../Message";
 import CompilerWorker from "./compiler.worker?worker";
 import { debounce } from "lodash-es";
+import { compile } from "./compiler";
 
 interface MessageData {
   data: {
@@ -19,35 +20,40 @@ export default function Preview() {
   const [compiledCode, setCompiledCode] = useState("");
   const [error, setError] = useState("");
 
-  const compilerWorkerRef = useRef<Worker>();
+  // const compilerWorkerRef = useRef<Worker>();
+
+  // useEffect(() => {
+  //   if (!compilerWorkerRef.current) {
+  //     compilerWorkerRef.current = new CompilerWorker();
+  //     compilerWorkerRef.current.addEventListener("message", (event) => {
+  //       if (event.data.type === "COMPILED_CODE") {
+  //         setCompiledCode(event.data.data);
+  //       } else {
+  //         console.log("error", event);
+  //       }
+  //     });
+  //   }
+  // }, []);
 
   useEffect(() => {
-    if (!compilerWorkerRef.current) {
-      compilerWorkerRef.current = new CompilerWorker();
-      compilerWorkerRef.current.addEventListener("message", (event) => {
-        if (event.data.type === "COMPILED_CODE") {
-          setCompiledCode(event.data.data);
-        } else {
-          console.log("error", event);
-        }
-      });
-    }
-  }, []);
+    const res = compile(files);
+    setCompiledCode(res);
+  }, [files]);
 
-  const debouncePostMessage = useMemo(
-    () =>
-      debounce(() => {
-        compilerWorkerRef.current?.postMessage(files);
-      }, 500),
-    [compilerWorkerRef]
-  );
+  // const debouncePostMessage = useMemo(
+  //   () =>
+  //     debounce(() => {
+  //       compilerWorkerRef.current?.postMessage(files);
+  //     }, 500),
+  //   [compilerWorkerRef]
+  // );
 
-  useEffect(() => {
-    debouncePostMessage();
-    return () => {
-      debouncePostMessage.cancel();
-    };
-  }, [files, debouncePostMessage]);
+  // useEffect(() => {
+  //   debouncePostMessage();
+  //   return () => {
+  //     debouncePostMessage.cancel();
+  //   };
+  // }, [files, debouncePostMessage]);
 
   const getIframeUrl = () => {
     const res = iframeRaw
@@ -95,11 +101,13 @@ export default function Preview() {
       />
       <Message type="error" content={error} />
 
-      {/* <Editor file={{
-            name: 'dist.js',
-            value: compiledCode,
-            language: 'javascript'
-        }}/> */}
+      {/* <Editor
+        file={{
+          name: "dist.js",
+          value: compiledCode,
+          language: "javascript",
+        }}
+      /> */}
     </div>
   );
 }

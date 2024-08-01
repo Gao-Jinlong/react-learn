@@ -1,5 +1,5 @@
 import { transform } from "@babel/standalone";
-import { File, Files } from "../../PlaygroundContext";
+import { Files, File } from "../../PlaygroundContext";
 import { ENTRY_FILE_NAME } from "../../files";
 import { PluginObj } from "@babel/core";
 
@@ -22,6 +22,7 @@ export const babelTransform = (
 ) => {
   const _code = beforeTransformCode(filename, code);
   let result = "";
+
   try {
     result = transform(_code, {
       presets: ["react", "typescript"],
@@ -30,56 +31,15 @@ export const babelTransform = (
       retainLines: true,
     }).code!;
   } catch (e) {
-    console.error("编译出错", e);
+    console.error("编译错误", e);
   }
+
   return result;
 };
 
-const getModuleFile = (files: Files, modulePath: string) => {
-  let moduleName = modulePath.split("./").pop() || "";
-  if (!moduleName.includes(".")) {
-    const realModuleName = Object.keys(files)
-      .filter((key) => {
-        return (
-          key.endsWith(".ts") ||
-          key.endsWith(".tsx") ||
-          key.endsWith(".js") ||
-          key.endsWith(".jsx")
-        );
-      })
-      .find((key) => {
-        return key.split(".").includes(moduleName);
-      });
-    if (realModuleName) {
-      moduleName = realModuleName;
-    }
-  }
-  return files[moduleName];
-};
-
-const json2Js = (file: File) => {
-  const js = `export default ${file.value}`;
-  return URL.createObjectURL(
-    new Blob([js], { type: "application/javascript" })
-  );
-};
-
-const css2Js = (file: File) => {
-  const randomId = new Date().getTime();
-  const js = `
-(() => {
-    const stylesheet = document.createElement('style')
-    stylesheet.setAttribute('id', 'style_${randomId}_${file.name}')
-    document.head.appendChild(stylesheet)
-
-    const styles = document.createTextNode(\`${file.value}\`)
-    stylesheet.innerHTML = ''
-    stylesheet.appendChild(styles)
-})()
-    `;
-  return URL.createObjectURL(
-    new Blob([js], { type: "application/javascript" })
-  );
+export const compile = (files: Files) => {
+  const main = files[ENTRY_FILE_NAME];
+  return babelTransform(ENTRY_FILE_NAME, main.value, files);
 };
 
 function customResolver(files: Files): PluginObj {
@@ -87,8 +47,10 @@ function customResolver(files: Files): PluginObj {
     visitor: {
       ImportDeclaration(path) {
         const modulePath = path.node.source.value;
+
         if (modulePath.startsWith(".")) {
           const file = getModuleFile(files, modulePath);
+
           if (!file) return;
 
           if (file.name.endsWith(".css")) {
@@ -108,18 +70,51 @@ function customResolver(files: Files): PluginObj {
   };
 }
 
-export const compile = (files: Files) => {
-  const main = files[ENTRY_FILE_NAME];
-  return babelTransform(ENTRY_FILE_NAME, main.value, files);
+function getModuleFile(files: Files, modulePath: string) {
+  let moduleName = modulePath.split("./").pop() || "";
+  if (!moduleName.includes(".")) {
+    const realModuleName = Object.keys(files)
+      .filter((key) => {
+        return (
+          key.endsWith(".ts") ||
+          key.endsWith("tsx") ||
+          key.endsWith(".js") ||
+          key.endsWith(".jsx")
+        );
+      })
+      .find((key) => {
+        return key.split(".").includes(moduleName);
+      });
+
+    if (realModuleName) {
+      moduleName = realModuleName;
+    }
+  }
+
+  return files[moduleName];
+}
+
+const css2Js = (file: File) => {
+  const randomId = new Date().getTime();
+  const js = `
+(() => {
+    const stylesheet = document.createElement('style')
+    stylesheet.setAttribute('id', 'style_${randomId}_${file.name}')
+    document.head.appendChild(stylesheet)
+
+    const styles = document.createTextNode(\`${file.value}\`)
+    stylesheet.innerHTML = ''
+    stylesheet.appendChild(styles)
+})()
+    `;
+  return URL.createObjectURL(
+    new Blob([js], { type: "application/javascript" })
+  );
 };
 
-self.addEventListener("message", async ({ data }) => {
-  try {
-    self.postMessage({
-      type: "COMPILED_CODE",
-      data: compile(data),
-    });
-  } catch (e) {
-    self.postMessage({ type: "ERROR", error: e });
-  }
-});
+function json2Js(file: File) {
+  const js = `export default ${file.value}`;
+  return URL.createObjectURL(
+    new Blob([js], { type: "application/javascript" })
+  );
+}
