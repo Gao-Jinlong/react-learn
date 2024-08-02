@@ -76,6 +76,7 @@ export default function FileNameList() {
     selectedFileName,
     updateFileName,
     removeFile,
+    addFile,
   } = useContext(PlaygroundContext);
 
   const [tabs, setTabs] = useState<string[]>([""]);
@@ -104,6 +105,11 @@ export default function FileNameList() {
     setSelectedFileName(ENTRY_FILE_NAME);
   };
 
+  const addTab = () => {
+    addFile("Comp" + Math.random().toString().slice(2, 6) + ".tsx");
+    setCreating(true);
+  };
+
   return (
     <div className={styles.tabs}>
       {tabs.map((item, index, arr) => (
@@ -115,9 +121,14 @@ export default function FileNameList() {
           onClick={() => setSelectedFileName(item)}
           actived={selectedFileName === item}
           onEditComplete={(name: string) => handleEditComplete(name, item)}
-          onRemove={() => handleRemove(item)}
+          onRemove={() => {
+            handleRemove(item);
+          }}
         ></FileNameItem>
       ))}
+      <div className={styles.add} onClick={addTab}>
+        +
+      </div>
     </div>
   );
 }

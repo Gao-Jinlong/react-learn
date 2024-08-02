@@ -17,12 +17,12 @@ export interface FileNameItemProps {
 export const FileNameItem: React.FC<FileNameItemProps> = (props) => {
   const {
     value,
-    actived = false,
-    readonly,
-    creating,
+    actived,
     onClick,
-    onRemove,
     onEditComplete,
+    creating,
+    onRemove,
+    readonly,
   } = props;
 
   const [name, setName] = useState(value);
@@ -32,8 +32,13 @@ export const FileNameItem: React.FC<FileNameItemProps> = (props) => {
   const handleDoubleClick = () => {
     setEditing(true);
     setTimeout(() => {
-      inputRef?.current?.focus();
+      inputRef.current?.focus();
     }, 0);
+  };
+
+  const handleInputBlur = () => {
+    setEditing(false);
+    onEditComplete(name);
   };
 
   useEffect(() => {
@@ -41,11 +46,6 @@ export const FileNameItem: React.FC<FileNameItemProps> = (props) => {
       inputRef?.current?.focus();
     }
   }, [creating]);
-
-  const hanldeInputBlur = () => {
-    setEditing(false);
-    onEditComplete(name);
-  };
 
   return (
     <div
@@ -57,11 +57,12 @@ export const FileNameItem: React.FC<FileNameItemProps> = (props) => {
     >
       {editing ? (
         <input
+          type="text"
           ref={inputRef}
           className={styles["tabs-item-input"]}
           value={name}
-          onBlur={hanldeInputBlur}
           onChange={(e) => setName(e.target.value)}
+          onBlur={handleInputBlur}
         />
       ) : (
         <>
@@ -71,7 +72,7 @@ export const FileNameItem: React.FC<FileNameItemProps> = (props) => {
           {!readonly ? (
             <Popconfirm
               title="确认删除该文件吗？"
-              okText="确定"
+              okText="确认"
               cancelText="取消"
               onConfirm={(e) => {
                 e?.stopPropagation();
