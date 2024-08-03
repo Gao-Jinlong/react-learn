@@ -12,7 +12,10 @@ export default function ReactPlayground() {
   const { theme, setTheme } = useContext(PlaygroundContext);
 
   return (
-    <div className={theme} style={{ height: "100vh" }}>
+    <div
+      className={theme}
+      style={{ height: "100vh", display: "flex", flexDirection: "column" }}
+    >
       <Header />
       <Allotment defaultSizes={[100, 100]}>
         <Allotment.Pane minSize={0}>
