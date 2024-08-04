@@ -22,9 +22,9 @@ export interface PlaygroundContext {
   selectedFileName: string;
   setSelectedFileName: (fileName: string) => void;
   setFiles: (files: Files) => void;
-
   theme: Theme;
   setTheme: (theme: Theme) => void;
+
   addFile: (fileName: string) => void;
   removeFile: (fileName: string) => void;
   updateFileName: (oldFieldName: string, newFieldName: string) => void;
