@@ -1,7 +1,8 @@
 import { Button as AntdButton } from "antd";
 import type { ButtonType } from "antd/es/button";
+import type { BaseComponentProps } from "../../interface";
 
-export interface ButtonProps {
+export interface ButtonProps extends BaseComponentProps {
   type: ButtonType;
   text: string;
 }

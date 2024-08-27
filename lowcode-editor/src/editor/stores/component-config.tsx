@@ -1,39 +1,48 @@
 import { create } from "zustand";
-import Container from "../materials/Container";
-import Button from "../materials/Button";
-import Page from "../materials/Page";
+import Container, { type ContainerProps } from "../materials/Container";
+import Button, { type ButtonProps } from "../materials/Button";
+import Page, { type PageProps } from "../materials/Page";
+import { ComponentEnum } from "../interface";
 
-export interface ComponentConfig {
-  name: string;
-  defaultProps: Record<string, unknown>;
-  component: any;
+export interface ComponentPropsList {
+  [ComponentEnum.Container]: ContainerProps;
+  [ComponentEnum.Button]: ButtonProps;
+  [ComponentEnum.Page]: PageProps;
+}
+export interface ComponentConfig<P = {}> {
+  name: ComponentEnum;
+  defaultProps: Partial<P>;
+  component: React.ComponentType<P>;
 }
 
 export interface State {
   componentConfig: {
-    [key: string]: ComponentConfig;
+    [key in ComponentEnum]: ComponentConfig<ComponentPropsList[key]>;
   };
 }
 export interface Action {
-  registerComponent: (name: string, componentConfig: ComponentConfig) => void;
+  registerComponent: <N extends ComponentEnum>(
+    name: N,
+    componentConfig: ComponentConfig<ComponentPropsList[N]>,
+  ) => void;
 }
 export const useComponentConfigStore = create<State & Action>((set) => ({
   componentConfig: {
-    Container: {
-      name: "Container",
+    [ComponentEnum.Container]: {
+      name: ComponentEnum.Container,
       defaultProps: {},
       component: Container,
     },
-    Button: {
-      name: "Button",
+    [ComponentEnum.Button]: {
+      name: ComponentEnum.Button,
       defaultProps: {
         type: "primary",
         text: "确定",
       },
       component: Button,
     },
-    Page: {
-      name: "Page",
+    [ComponentEnum.Page]: {
+      name: ComponentEnum.Page,
       defaultProps: {},
       component: Page,
     },

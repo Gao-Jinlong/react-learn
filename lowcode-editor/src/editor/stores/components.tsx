@@ -1,28 +1,35 @@
 import { create } from "zustand";
 import { generateId } from "../utils";
+import type { ComponentPropsList } from "./component-config";
+import {
+  ComponentEnum,
+  type ComponentId,
+  type ComponentProps,
+  type EditableProps,
+} from "../interface";
 
-export interface Component {
-  id: string;
-  name: string;
-  props: any;
+export interface Component<N extends ComponentEnum = ComponentEnum> {
+  id: ComponentId;
+  name: N;
+  props: EditableProps<ComponentPropsList[N]>;
   children?: Component[];
-  parentId?: string;
+  parentId?: ComponentId;
   desc?: string;
 }
 interface State {
   components: Component[];
 }
 interface Action {
-  addComponent: (component: Component, parentId?: string) => void;
-  removeComponent: (id: string) => void;
-  updateComponentProps: (id: string, props: any) => void;
+  addComponent: (component: Component, parentId?: ComponentId) => void;
+  removeComponent: (id: ComponentId) => void;
+  updateComponentProps: (id: ComponentId, props: ComponentProps) => void;
 }
 
 export const useComponentsStore = create<State & Action>((set, get) => ({
   components: [
     {
       id: generateId(),
-      name: "Page",
+      name: ComponentEnum.Page,
       props: {},
       desc: "页面",
     },
@@ -81,7 +88,7 @@ export const useComponentsStore = create<State & Action>((set, get) => ({
 }));
 
 function getComponentById(
-  id: string | null,
+  id: ComponentId | null,
   components: Component[],
 ): Component | null {
   if (!id) return null;
