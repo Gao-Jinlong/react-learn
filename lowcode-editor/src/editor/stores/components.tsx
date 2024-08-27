@@ -1,26 +1,27 @@
 import { create } from "zustand";
+import { generateId } from "../utils";
 
 export interface Component {
-  id: number;
+  id: string;
   name: string;
   props: any;
   children?: Component[];
-  parentId?: number;
+  parentId?: string;
   desc?: string;
 }
 interface State {
   components: Component[];
 }
 interface Action {
-  addComponent: (component: Component, parentId?: number) => void;
-  removeComponent: (id: number) => void;
-  updateComponentProps: (id: number, props: any) => void;
+  addComponent: (component: Component, parentId?: string) => void;
+  removeComponent: (id: string) => void;
+  updateComponentProps: (id: string, props: any) => void;
 }
 
 export const useComponentsStore = create<State & Action>((set, get) => ({
   components: [
     {
-      id: 1,
+      id: generateId(),
       name: "Page",
       props: {},
       desc: "页面",
@@ -80,7 +81,7 @@ export const useComponentsStore = create<State & Action>((set, get) => ({
 }));
 
 function getComponentById(
-  id: number | null,
+  id: string | null,
   components: Component[],
 ): Component | null {
   if (!id) return null;

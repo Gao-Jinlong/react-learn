@@ -1,24 +1,35 @@
-import { useEffect } from "react";
-import { useComponentsStore } from "../../stores/components";
+import React from "react";
+import { useComponentsStore, type Component } from "../../stores/components";
+import { useComponentConfigStore } from "../../stores/component-config";
 
 export default function EditArea() {
-  const { components, addComponent } = useComponentsStore();
+  const { components } = useComponentsStore();
+  const { componentConfig } = useComponentConfigStore();
 
-  useEffect(() => {
-    addComponent(
-      {
-        id: 222,
-        name: "Container",
-        props: {},
-        children: [],
-      },
-      1,
-    );
-  }, [addComponent]);
+  function renderComponents(components: Component[]): React.ReactNode {
+    return components.map((component) => {
+      const config = componentConfig[component.name];
+
+      if (!config?.component) {
+        return null;
+      }
+      return React.createElement(
+        config.component,
+        {
+          key: component.id,
+          id: component.id,
+          ...config.defaultProps,
+          ...component.props,
+        },
+        renderComponents(component.children || []),
+      );
+    });
+  }
 
   return (
-    <div>
-      <pre>{JSON.stringify(components, null, 2)}</pre>
+    <div className="h-[100%]">
+      {/* <pre>{JSON.stringify(components, null, 2)}</pre> */}
+      {renderComponents(components)}
     </div>
   );
 }
