@@ -1,7 +1,9 @@
 import { useDrag } from "react-dnd";
+import { componentConfig } from "../../config";
+import type { ComponentEnum } from "../../interface";
 
 export interface MaterialItemProps {
-  name: string;
+  name: ComponentEnum;
 }
 
 export default function MaterialItem(props: MaterialItemProps) {
@@ -11,6 +13,7 @@ export default function MaterialItem(props: MaterialItemProps) {
     type: name,
     item: {
       type: name,
+      node: componentConfig[name].component,
     },
   });
 

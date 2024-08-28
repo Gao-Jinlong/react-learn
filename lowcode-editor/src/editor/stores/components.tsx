@@ -1,16 +1,16 @@
 import { create } from "zustand";
-import { generateId } from "../utils";
-import type { ComponentPropsList } from "./component-config";
 import {
   ComponentEnum,
   type ComponentId,
   type ComponentProps,
   type EditableProps,
 } from "../interface";
+import { generateDefaultComponents, type ComponentPropsList } from "../config";
 
 export interface Component<N extends ComponentEnum = ComponentEnum> {
   id: ComponentId;
   name: N;
+  node: React.ComponentType<ComponentPropsList[N]>;
   props: EditableProps<ComponentPropsList[N]>;
   children?: Component[];
   parentId?: ComponentId;
@@ -26,14 +26,7 @@ interface Action {
 }
 
 export const useComponentsStore = create<State & Action>((set, get) => ({
-  components: [
-    {
-      id: generateId(),
-      name: ComponentEnum.Page,
-      props: {},
-      desc: "页面",
-    },
-  ],
+  components: generateDefaultComponents(),
   addComponent: (component, parentId) => {
     set((state) => {
       const oldComponent = getComponentById(component.id, state.components);
@@ -67,7 +60,7 @@ export const useComponentsStore = create<State & Action>((set, get) => ({
 
       if (parentComponent) {
         parentComponent.children = parentComponent?.children?.filter(
-          (item) => item.id !== +componentId,
+          (item) => item.id !== componentId,
         );
 
         set({ components: [...get().components] });

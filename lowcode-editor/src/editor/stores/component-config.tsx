@@ -1,19 +1,10 @@
 import { create } from "zustand";
-import Container, { type ContainerProps } from "../materials/Container";
-import Button, { type ButtonProps } from "../materials/Button";
-import Page, { type PageProps } from "../materials/Page";
 import { ComponentEnum } from "../interface";
-
-export interface ComponentPropsList {
-  [ComponentEnum.Container]: ContainerProps;
-  [ComponentEnum.Button]: ButtonProps;
-  [ComponentEnum.Page]: PageProps;
-}
-export interface ComponentConfig<P = {}> {
-  name: ComponentEnum;
-  defaultProps: Partial<P>;
-  component: React.ComponentType<P>;
-}
+import {
+  componentConfig,
+  type ComponentConfig,
+  type ComponentPropsList,
+} from "../config";
 
 export interface State {
   componentConfig: {
@@ -27,26 +18,7 @@ export interface Action {
   ) => void;
 }
 export const useComponentConfigStore = create<State & Action>((set) => ({
-  componentConfig: {
-    [ComponentEnum.Container]: {
-      name: ComponentEnum.Container,
-      defaultProps: {},
-      component: Container,
-    },
-    [ComponentEnum.Button]: {
-      name: ComponentEnum.Button,
-      defaultProps: {
-        type: "primary",
-        text: "确定",
-      },
-      component: Button,
-    },
-    [ComponentEnum.Page]: {
-      name: ComponentEnum.Page,
-      defaultProps: {},
-      component: Page,
-    },
-  },
+  componentConfig: componentConfig,
   registerComponent: (name, componentConfig) =>
     set((state) => {
       return {

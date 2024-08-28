@@ -1,24 +1,22 @@
 import React from "react";
 import { useComponentsStore, type Component } from "../../stores/components";
-import { useComponentConfigStore } from "../../stores/component-config";
 
 export default function EditArea() {
   const { components } = useComponentsStore();
-  const { componentConfig } = useComponentConfigStore();
 
   function renderComponents(components: Component[]): React.ReactNode {
     return components.map((component) => {
-      const config = componentConfig[component.name];
+      const node = component.node;
 
-      if (!config?.component) {
+      if (!node) {
         return null;
       }
       return React.createElement(
-        config.component,
+        node,
         {
           key: component.id,
           id: component.id,
-          ...config.defaultProps,
+          name: component.name,
           ...component.props,
         },
         renderComponents(component.children || []),
