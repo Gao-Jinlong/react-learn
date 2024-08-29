@@ -1,25 +1,12 @@
-import { ComponentEnum } from "../interface";
-import Container, { type ContainerProps } from "../materials/Container";
-import Button, { type ButtonProps } from "../materials/Button";
-import Page, { type PageProps } from "../materials/Page";
-import { generateId } from "../utils";
-
-export interface ComponentConfig<P = {}> {
-  name: ComponentEnum;
-  defaultProps: Partial<P>;
-  component: React.ComponentType<P>;
-}
-
-export interface ComponentPropsList {
-  [ComponentEnum.Container]: ContainerProps;
-  [ComponentEnum.Button]: ButtonProps;
-  [ComponentEnum.Page]: PageProps;
-}
+import { ComponentEnum, type ComponentConfig } from "../interface";
+import Container from "../materials/Container";
+import Button from "../materials/Button";
+import Page from "../materials/Page";
 
 export interface ComponentConfigList {
-  [ComponentEnum.Container]: ComponentConfig<ContainerProps>;
-  [ComponentEnum.Button]: ComponentConfig<ButtonProps>;
-  [ComponentEnum.Page]: ComponentConfig<PageProps>;
+  [ComponentEnum.Container]: ComponentConfig<ComponentEnum.Container>;
+  [ComponentEnum.Button]: ComponentConfig<ComponentEnum.Button>;
+  [ComponentEnum.Page]: ComponentConfig<ComponentEnum.Page>;
 }
 export const componentConfig: ComponentConfigList = {
   [ComponentEnum.Container]: {
@@ -41,13 +28,3 @@ export const componentConfig: ComponentConfigList = {
     component: Page,
   },
 };
-
-export const generateDefaultComponents = () => [
-  {
-    id: generateId(),
-    name: ComponentEnum.Page,
-    props: {},
-    desc: "页面",
-    node: Page,
-  },
-];

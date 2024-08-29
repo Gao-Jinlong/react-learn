@@ -1,23 +1,30 @@
 import React from "react";
-import { useComponentsStore, type Component } from "../../stores/components";
-
+import { useComponentsStore } from "../../stores/components";
+import type {
+  ComponentDto,
+  ComponentEnum,
+  ComponentPropsList,
+  RenderComponentDto,
+} from "../../interface";
+import { componentConfig } from "../../config";
 export default function EditArea() {
   const { components } = useComponentsStore();
 
-  function renderComponents(components: Component[]): React.ReactNode {
+  function renderComponents(components: ComponentDto[]): React.ReactNode {
     return components.map((component) => {
-      const node = component.node;
-
-      if (!node) {
+      const config = componentConfig[component.name];
+      const Component = config.component as React.FunctionComponent<
+        ComponentPropsList[ComponentEnum]
+      >;
+      if (!Component) {
         return null;
       }
+      const props = transformPropsToRender(component);
       return React.createElement(
-        node,
+        Component,
         {
           key: component.id,
-          id: component.id,
-          name: component.name,
-          ...component.props,
+          ...props,
         },
         renderComponents(component.children || []),
       );
@@ -26,8 +33,18 @@ export default function EditArea() {
 
   return (
     <div className="h-[100%]">
-      {/* <pre>{JSON.stringify(components, null, 2)}</pre> */}
+      <pre>{JSON.stringify(components, null, 2)}</pre>
       {renderComponents(components)}
     </div>
   );
+}
+
+function transformPropsToRender(dto: ComponentDto): RenderComponentDto {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const { props, children, ...rest } = dto;
+
+  return {
+    ...props,
+    ...rest,
+  };
 }

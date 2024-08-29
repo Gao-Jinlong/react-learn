@@ -1,19 +1,18 @@
 import type { PropsWithChildren } from "react";
 import type { ContainerProps } from "./materials/Container";
-import type { ButtonProps } from "antd";
 import type { PageProps } from "./materials/Page";
+import type { ButtonProps } from "./materials/Button";
 
 export type ComponentId = string;
-export type ComponentName = string;
 /** 组件基础内置属性 */
 export interface BaseComponentProps extends PropsWithChildren {
   id: ComponentId;
-  name: ComponentName;
+  name: ComponentEnum;
 }
 
-export type EditableProps<T extends BaseComponentProps> = Omit<
+export type EditableProps<T extends Partial<BaseComponentProps>> = Omit<
   T,
-  "id" | "name"
+  "id" | "name" | "children"
 >;
 export enum ComponentEnum {
   Container = "Container",
@@ -21,4 +20,27 @@ export enum ComponentEnum {
   Page = "Page",
 }
 
-export type ComponentProps = ContainerProps | ButtonProps | PageProps;
+export type ComponentPropsUnion = ContainerProps | ButtonProps | PageProps;
+
+export interface ComponentDto<N extends ComponentEnum = ComponentEnum> {
+  id: ComponentId;
+  name: N;
+  props: EditableProps<ComponentPropsList[N]>;
+  children?: ComponentDto[];
+  parentId?: ComponentId;
+  desc?: string;
+}
+export interface ComponentConfig<T extends ComponentEnum = ComponentEnum> {
+  name: T;
+  defaultProps: Partial<ComponentPropsList[T]>;
+  component: React.FunctionComponent<ComponentPropsList[T]>;
+}
+export interface CreateComponentDto extends Omit<ComponentDto, "id"> {}
+export interface RenderComponentDto<T extends ComponentEnum = ComponentEnum>
+  extends Omit<ComponentDto<T>, "children" | "props"> {}
+
+export interface ComponentPropsList {
+  [ComponentEnum.Container]: ContainerProps;
+  [ComponentEnum.Button]: ButtonProps;
+  [ComponentEnum.Page]: PageProps;
+}

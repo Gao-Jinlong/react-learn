@@ -1,9 +1,11 @@
 import { theme } from "antd";
 import { useDrop } from "react-dnd";
 import { useComponentsStore } from "../../stores/components";
-import { generateId } from "../../utils";
-import type { BaseComponentProps, ComponentEnum } from "../../interface";
-import { componentConfig } from "../../config";
+import {
+  BaseComponentProps,
+  ComponentEnum,
+  type ComponentConfig,
+} from "../../interface";
 
 const { useToken } = theme;
 
@@ -14,28 +16,15 @@ export default function Page({ id, children }: PageProps) {
   const { addComponent } = useComponentsStore();
 
   const [{ canDrop }, drop] = useDrop({
-    accept: ["Container", "Button"],
+    accept: [ComponentEnum.Container, ComponentEnum.Button],
     drop: handleDrop,
     collect: (monitor) => ({
       canDrop: monitor.canDrop(),
     }),
   });
 
-  function handleDrop(item: {
-    type: ComponentEnum;
-    node: React.ComponentType<BaseComponentProps>;
-  }) {
-    const props = componentConfig[item.type].defaultProps;
-
-    addComponent(
-      {
-        id: generateId(),
-        name: item.type,
-        props,
-        node: item.node,
-      },
-      id,
-    );
+  function handleDrop(item: ComponentConfig) {
+    addComponent(item, id);
   }
 
   return (

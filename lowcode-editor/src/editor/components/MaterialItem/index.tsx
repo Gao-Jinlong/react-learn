@@ -1,8 +1,12 @@
 import { useDrag } from "react-dnd";
-import { componentConfig } from "../../config";
-import type { ComponentEnum } from "../../interface";
+import type {
+  ComponentEnum,
+  ComponentPropsList,
+  EditableProps,
+} from "../../interface";
 
-export interface MaterialItemProps {
+export interface MaterialItemProps
+  extends EditableProps<ComponentPropsList[ComponentEnum]> {
   name: ComponentEnum;
 }
 
@@ -11,10 +15,7 @@ export default function MaterialItem(props: MaterialItemProps) {
 
   const [, drag] = useDrag({
     type: name,
-    item: {
-      type: name,
-      node: componentConfig[name].component,
-    },
+    item: props,
   });
 
   return (

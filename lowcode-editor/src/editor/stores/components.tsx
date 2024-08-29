@@ -1,38 +1,44 @@
 import { create } from "zustand";
 import {
   ComponentEnum,
+  type ComponentDto,
   type ComponentId,
-  type ComponentProps,
+  type ComponentPropsUnion,
   type EditableProps,
+  type ComponentConfig,
 } from "../interface";
-import { generateDefaultComponents, type ComponentPropsList } from "../config";
+import { generateId } from "../utils";
 
-export interface Component<N extends ComponentEnum = ComponentEnum> {
-  id: ComponentId;
-  name: N;
-  node: React.ComponentType<ComponentPropsList[N]>;
-  props: EditableProps<ComponentPropsList[N]>;
-  children?: Component[];
-  parentId?: ComponentId;
-  desc?: string;
-}
 interface State {
-  components: Component[];
+  components: ComponentDto[];
 }
 interface Action {
-  addComponent: (component: Component, parentId?: ComponentId) => void;
+  addComponent: (component: ComponentConfig, parentId?: ComponentId) => void;
   removeComponent: (id: ComponentId) => void;
-  updateComponentProps: (id: ComponentId, props: ComponentProps) => void;
+  updateComponentProps: (id: ComponentId, props: ComponentPropsUnion) => void;
 }
 
 export const useComponentsStore = create<State & Action>((set, get) => ({
-  components: generateDefaultComponents(),
-  addComponent: (component, parentId) => {
+  components: [
+    {
+      id: generateId(),
+      name: ComponentEnum.Page,
+      props: {},
+      desc: "页面",
+      children: [],
+    },
+  ],
+  addComponent: (
+    createComponentDto: ComponentConfig,
+    parentId?: ComponentId,
+  ) => {
     set((state) => {
-      const oldComponent = getComponentById(component.id, state.components);
-      if (oldComponent) {
-        state.removeComponent(component.id);
-      }
+      const { defaultProps, ...rest } = createComponentDto;
+      const component: ComponentDto = {
+        ...rest,
+        props: { ...defaultProps },
+        id: generateId(),
+      };
       if (parentId) {
         const parentComponent = getComponentById(parentId, state.components);
         if (parentComponent) {
@@ -49,7 +55,7 @@ export const useComponentsStore = create<State & Action>((set, get) => ({
       return { components: [...state.components, component] };
     });
   },
-  removeComponent: (componentId) => {
+  removeComponent: (componentId: ComponentId) => {
     if (!componentId) return;
     const component = getComponentById(componentId, get().components);
     if (component?.parentId) {
@@ -67,7 +73,10 @@ export const useComponentsStore = create<State & Action>((set, get) => ({
       }
     }
   },
-  updateComponentProps: (componentId, props) =>
+  updateComponentProps: (
+    componentId: ComponentId,
+    props: EditableProps<Partial<ComponentPropsUnion>>,
+  ) =>
     set((state) => {
       const component = getComponentById(componentId, state.components);
       if (component) {
@@ -82,8 +91,8 @@ export const useComponentsStore = create<State & Action>((set, get) => ({
 
 function getComponentById(
   id: ComponentId | null,
-  components: Component[],
-): Component | null {
+  components: ComponentDto[],
+): ComponentDto | null {
   if (!id) return null;
 
   for (const component of components) {

@@ -1,11 +1,11 @@
 import { useDrop } from "react-dnd";
-import type { BaseComponentProps } from "../../interface";
+import { ComponentEnum, type BaseComponentProps } from "../../interface";
 
 export interface ContainerProps extends BaseComponentProps {}
 
 export default function Container({ children }: ContainerProps) {
   const [{ canDrop }, drop] = useDrop({
-    accept: ["Button", "Container"],
+    accept: [ComponentEnum.Container, ComponentEnum.Button],
     drop: () => {
       console.log("drop");
     },
