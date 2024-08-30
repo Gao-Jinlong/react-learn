@@ -33,7 +33,7 @@ export default function EditArea() {
 
   return (
     <div className="h-[100%]">
-      <pre>{JSON.stringify(components, null, 2)}</pre>
+      {/* <pre>{JSON.stringify(components, null, 2)}</pre> */}
       {renderComponents(components)}
     </div>
   );

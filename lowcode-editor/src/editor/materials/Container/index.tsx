@@ -1,28 +1,33 @@
-import { useDrop } from "react-dnd";
-import { ComponentEnum, type BaseComponentProps } from "../../interface";
+import { type DropTargetMonitor } from "react-dnd";
+import {
+  ComponentEnum,
+  type BaseComponentProps,
+  type ComponentConfig,
+} from "../../interface";
+import { useComponentsStore } from "../../stores/components";
+import EditorComponentWrapper from "../../components/EditorComponentWrapper";
 
 export interface ContainerProps extends BaseComponentProps {}
 
-export default function Container({ children }: ContainerProps) {
-  const [{ canDrop }, drop] = useDrop({
-    accept: [ComponentEnum.Container, ComponentEnum.Button],
-    drop: () => {
-      console.log("drop");
-    },
-    collect: (monitor) => ({
-      canDrop: monitor.canDrop(),
-    }),
-  });
+export default function Container(props: ContainerProps) {
+  const { id, children } = props;
+  const { addComponent } = useComponentsStore();
+
+  function handleDrop(item: ComponentConfig, monitor: DropTargetMonitor) {
+    if (monitor.didDrop()) {
+      return;
+    }
+    addComponent(item, id);
+  }
 
   return (
-    <div
-      ref={drop}
-      className="min-h-[100px] border border-[#000] p-[20px]"
-      style={{
-        border: canDrop ? "2px solid red" : "1px solid #000",
-      }}
+    <EditorComponentWrapper
+      handleDrop={handleDrop}
+      dropOptions={{ accept: [ComponentEnum.Button, ComponentEnum.Container] }}
+      {...props}
+      className="min-h-[100px]"
     >
       {children}
-    </div>
+    </EditorComponentWrapper>
   );
 }
