@@ -23,9 +23,9 @@ export default function Container(props: ContainerProps) {
   return (
     <EditorComponentWrapper
       handleDrop={handleDrop}
+      className="min-h-[100px]"
       dropOptions={{ accept: [ComponentEnum.Button, ComponentEnum.Container] }}
       {...props}
-      className="min-h-[100px]"
     >
       {children}
     </EditorComponentWrapper>

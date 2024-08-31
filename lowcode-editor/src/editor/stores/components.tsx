@@ -11,11 +11,13 @@ import { generateId } from "../utils";
 
 interface State {
   components: ComponentDto[];
+  hoverComponent: ComponentDto | null;
 }
 interface Action {
   addComponent: (component: ComponentConfig, parentId?: ComponentId) => void;
   removeComponent: (id: ComponentId) => void;
   updateComponentProps: (id: ComponentId, props: ComponentPropsUnion) => void;
+  setHoverComponent: (componentId: ComponentId | null) => void;
 }
 
 export const useComponentsStore = create<State & Action>((set, get) => ({
@@ -28,6 +30,13 @@ export const useComponentsStore = create<State & Action>((set, get) => ({
       children: [],
     },
   ],
+  hoverComponent: null,
+
+  setHoverComponent: (componentId: ComponentId | null) => {
+    set(() => ({
+      hoverComponent: getComponentById(componentId, get().components),
+    }));
+  },
   addComponent: (
     createComponentDto: ComponentConfig,
     parentId?: ComponentId,

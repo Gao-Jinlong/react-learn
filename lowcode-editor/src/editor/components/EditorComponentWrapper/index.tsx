@@ -13,6 +13,7 @@ export default function EditorComponentWrapper({
   handleDrop,
   className,
   dropOptions,
+  id,
 }: EditorComponentWrapperProps) {
   const [{ canDrop, isOverCurrent }, drop] = useDrop(
     {
@@ -29,8 +30,8 @@ export default function EditorComponentWrapper({
   return (
     <div
       ref={drop}
+      data-component-id={id}
       className={classNames(
-        "css-var-r1 border border-[#000] p-[20px]",
         {
           "can-drop": canDrop,
           "over-current": canDrop && isOverCurrent,

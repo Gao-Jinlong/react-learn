@@ -1,18 +1,21 @@
-import React from "react";
+import React, { useMemo } from "react";
 import { useComponentsStore } from "../../stores/components";
-import type {
-  ComponentDto,
-  ComponentEnum,
-  ComponentPropsList,
-  RenderComponentDto,
+import {
+  type ComponentDto,
+  type ComponentEnum,
+  type ComponentPropsList,
+  type RenderComponentDto,
 } from "../../interface";
-import { componentConfig } from "../../config";
+import { editComponentSetting } from "../../config";
+import HoverComponentPanel from "../HoverComponentPanel";
+
 export default function EditArea() {
-  const { components } = useComponentsStore();
+  const { components, hoverComponent, setHoverComponent } =
+    useComponentsStore();
 
   function renderComponents(components: ComponentDto[]): React.ReactNode {
     return components.map((component) => {
-      const config = componentConfig[component.name];
+      const config = editComponentSetting[component.name];
       const Component = config.component as React.FunctionComponent<
         ComponentPropsList[ComponentEnum]
       >;
@@ -31,11 +34,33 @@ export default function EditArea() {
     });
   }
 
+  function handleMouseOver(e: React.MouseEvent<HTMLDivElement>) {
+    const path = e.nativeEvent.composedPath();
+
+    for (let i = 0; i < path.length; i++) {
+      const element = path[i] as HTMLDivElement;
+
+      const componentId = element.dataset?.componentId;
+
+      if (componentId) {
+        setHoverComponent(componentId);
+        return;
+      }
+    }
+
+    setHoverComponent(null);
+  }
+
   return (
-    <div className="h-[100%]">
-      {/* <pre>{JSON.stringify(components, null, 2)}</pre> */}
-      {renderComponents(components)}
-    </div>
+    <>
+      <div className="h-[100%]" onMouseOver={handleMouseOver}>
+        {renderComponents(components)}
+      </div>
+      <HoverComponentPanel
+        container={document.body}
+        hoverComponent={hoverComponent}
+      />
+    </>
   );
 }
 

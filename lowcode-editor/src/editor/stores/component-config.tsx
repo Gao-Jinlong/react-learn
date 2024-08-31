@@ -1,10 +1,10 @@
 import { create } from "zustand";
-import { componentConfig, type ComponentConfigList } from "../config";
+import { editComponentSetting, type EditComponentSettings } from "../config";
 
 export interface State {
-  componentConfig: ComponentConfigList;
+  componentConfig: EditComponentSettings;
 }
 export interface Action {}
 export const useComponentConfigStore = create<State & Action>(() => ({
-  componentConfig: componentConfig,
+  componentConfig: editComponentSetting,
 }));

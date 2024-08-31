@@ -18,8 +18,10 @@ export default function Page(props: PageProps) {
 
   return (
     <EditorComponentWrapper
+      data-component-id={id}
       handleDrop={handleDrop}
       dropOptions={{ accept: [ComponentEnum.Button, ComponentEnum.Container] }}
+      className="p-5"
       {...props}
     >
       {children}

@@ -7,7 +7,7 @@ import Setting from "./components/Setting";
 
 export default function Editor() {
   return (
-    <div className="flex h-[100vh] flex-col">
+    <div className="css-var-r1 flex h-[100vh] flex-col">
       <div className="flex h-[60px] items-center border-b-[1px] border-[#000]">
         <Header />
       </div>
