@@ -8,10 +8,22 @@
   }
 }
 @layer utilities {
-  .can-drop {
+  /* 
+    Tips:
+    使用 :not 选择器提升样式优先级
+    伪类选择器的优先级取决于括号内优先级最高的选择器，这里使用了一个不会生效的 id 选择器，从而提升样式优先级
+   */
+  .can-drop:not(#elevate-selector-specificity) {
     @apply border border-dashed border-[--ant-color-primary];
   }
-  .over-current {
+  .over-current:not(#elevate-selector-specificity) {
     @apply border-solid border-[--ant-color-primary];
+  }
+
+  .component-container + .component-container {
+    @apply m-2 border-none;
+  }
+  .component-container:has(+ .component-container) {
+    @apply p-2;
   }
 }

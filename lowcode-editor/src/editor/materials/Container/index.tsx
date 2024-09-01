@@ -23,7 +23,7 @@ export default function Container(props: ContainerProps) {
   return (
     <EditorComponentWrapper
       handleDrop={handleDrop}
-      className="min-h-[100px]"
+      className="component-container relative min-h-[100px] border border-dashed border-[var(--ant-color-border)] bg-[var(--ant-color-bg-layout)] after:pointer-events-none after:absolute after:inset-0 after:flex after:items-center after:justify-center after:content-['容器'] has-[*]:border-none has-[*]:bg-transparent has-[*]:after:content-['']"
       dropOptions={{ accept: [ComponentEnum.Button, ComponentEnum.Container] }}
       {...props}
     >

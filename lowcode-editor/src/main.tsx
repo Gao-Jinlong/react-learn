@@ -7,7 +7,7 @@ import { HTML5Backend } from "react-dnd-html5-backend";
 import { ConfigProvider } from "antd";
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
-    <ConfigProvider theme={{ cssVar: true }}>
+    <ConfigProvider theme={{ cssVar: true, hashed: false }}>
       <DndProvider backend={HTML5Backend}>
         <App />
       </DndProvider>
