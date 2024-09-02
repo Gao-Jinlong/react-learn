@@ -20,9 +20,6 @@
     @apply border-solid border-[--ant-color-primary];
   }
 
-  .component-container + .component-container {
-    @apply m-2 border-none;
-  }
   .component-container:has(+ .component-container) {
     @apply p-2;
   }

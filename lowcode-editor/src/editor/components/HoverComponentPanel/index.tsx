@@ -1,10 +1,12 @@
-import type { ComponentDto } from "../../interface";
+import type { ComponentDto, ComponentId } from "../../interface";
 import { createPortal } from "react-dom";
-import { theme } from "antd";
+import { theme, Divider, message, Button } from "antd";
 import { useMemo } from "react";
+import { DeleteOutlined } from "@ant-design/icons";
+import { useComponentsStore } from "../../stores/components";
 
 export interface HoverComponentPanel {
-  hoverComponent: ComponentDto;
+  hoverComponent?: ComponentDto;
   container: HTMLElement;
 }
 export default function HoverComponentPanel({
@@ -12,6 +14,9 @@ export default function HoverComponentPanel({
   container,
 }: HoverComponentPanel) {
   const { token } = theme.useToken();
+
+  const { removeComponent } = useComponentsStore();
+  const { undo } = useComponentsStore.temporal.getState();
 
   const isShow = useMemo(() => !!hoverComponent, [hoverComponent]);
 
@@ -36,6 +41,31 @@ export default function HoverComponentPanel({
     };
   }, [hoverComponent, container]);
 
+  function handleDelete() {
+    if (!hoverComponent) return;
+    removeComponent(hoverComponent.id);
+    successDelete();
+  }
+
+  function successDelete() {
+    message.success({
+      key: "delete-success",
+      content: (
+        <div className="flex items-center">
+          删除成功
+          <Button onClick={handleUndo} type="link" size="small">
+            撤销
+          </Button>
+        </div>
+      ),
+    });
+  }
+
+  function handleUndo() {
+    message.destroy("delete-success");
+    undo();
+  }
+
   return createPortal(
     isShow ? (
       <div
@@ -50,12 +80,22 @@ export default function HoverComponentPanel({
         className="css-var-r1 pointer-events-none flex justify-center border border-solid border-[--ant-color-primary] transition-all duration-150"
       >
         <div
-          className="h-5 rounded-b-md px-2 text-[12px] text-white"
+          className="pointer-events-auto flex h-5 items-center justify-center rounded-b-md px-2 text-[12px] text-white"
           style={{
             background: token.colorPrimary,
           }}
         >
-          {hoverComponent.name}
+          <div>{hoverComponent?.name}</div>
+          <Divider
+            type="vertical"
+            style={{
+              borderColor: "#fff",
+            }}
+          />
+          <DeleteOutlined
+            className="cursor-pointer hover:text-[var(--ant-red)]"
+            onClick={handleDelete}
+          />
         </div>
       </div>
     ) : null,

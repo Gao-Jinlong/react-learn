@@ -21,7 +21,7 @@ export default function Page(props: PageProps) {
       data-component-id={id}
       handleDrop={handleDrop}
       dropOptions={{ accept: [ComponentEnum.Button, ComponentEnum.Container] }}
-      className="p-5"
+      className="h-full p-5"
       {...props}
     >
       {children}

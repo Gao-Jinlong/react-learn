@@ -1,4 +1,4 @@
-import React, { useMemo } from "react";
+import React from "react";
 import { useComponentsStore } from "../../stores/components";
 import {
   type ComponentDto,
@@ -48,7 +48,7 @@ export default function EditArea() {
       }
     }
 
-    setHoverComponent(null);
+    setHoverComponent(undefined);
   }
 
   return (
