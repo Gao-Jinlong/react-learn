@@ -8,10 +8,16 @@ import {
 } from "../../interface";
 import { editComponentSetting } from "../../config";
 import HoverComponentPanel from "../HoverComponentPanel";
+import EditComponentToolbox from "../EditComponentToolbox";
 
 export default function EditArea() {
-  const { components, hoverComponent, setHoverComponent } =
-    useComponentsStore();
+  const {
+    components,
+    hoverComponent,
+    setHoverComponent,
+    editComponent,
+    setEditComponent,
+  } = useComponentsStore();
 
   function renderComponents(components: ComponentDto[]): React.ReactNode {
     return components.map((component) => {
@@ -51,14 +57,43 @@ export default function EditArea() {
     setHoverComponent(undefined);
   }
 
+  function handleClick(e: React.MouseEvent<HTMLDivElement>) {
+    const path = e.nativeEvent.composedPath();
+
+    for (let i = 0; i < path.length; i++) {
+      const element = path[i] as HTMLDivElement;
+
+      const componentId = element.dataset?.componentId;
+
+      if (componentId) {
+        if (editComponent?.id === componentId) {
+          setEditComponent(undefined);
+        } else {
+          setEditComponent(componentId);
+        }
+        return;
+      }
+    }
+
+    setEditComponent(undefined);
+  }
+
   return (
     <>
-      <div className="h-[100%]" onMouseOver={handleMouseOver}>
+      <div
+        className="h-[100%]"
+        onMouseOver={handleMouseOver}
+        onClick={handleClick}
+      >
         {renderComponents(components)}
       </div>
       <HoverComponentPanel
         container={document.body}
         hoverComponent={hoverComponent}
+      />
+      <EditComponentToolbox
+        container={document.body}
+        editComponent={editComponent}
       />
     </>
   );

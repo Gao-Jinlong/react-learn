@@ -1,4 +1,4 @@
-import type { ComponentDto, ComponentId } from "../../interface";
+import type { ComponentDto } from "../../interface";
 import { createPortal } from "react-dom";
 import { theme, Divider, message, Button } from "antd";
 import { useMemo } from "react";
@@ -15,7 +15,8 @@ export default function HoverComponentPanel({
 }: HoverComponentPanel) {
   const { token } = theme.useToken();
 
-  const { removeComponent } = useComponentsStore();
+  const { removeComponent, editComponent, setEditComponent } =
+    useComponentsStore();
   const { undo } = useComponentsStore.temporal.getState();
 
   const isShow = useMemo(() => !!hoverComponent, [hoverComponent]);
@@ -48,12 +49,22 @@ export default function HoverComponentPanel({
   }
 
   function successDelete() {
+    let isUndo = false;
     message.success({
       key: "delete-success",
       content: (
-        <div className="flex items-center">
+        <div className="css-var-r1 flex items-center">
           删除成功
-          <Button onClick={handleUndo} type="link" size="small">
+          <Button
+            onClick={() => {
+              if (isUndo) return;
+              handleUndo();
+              isUndo = true;
+            }}
+            disabled={isUndo}
+            type="link"
+            size="small"
+          >
             撤销
           </Button>
         </div>
@@ -77,7 +88,7 @@ export default function HoverComponentPanel({
           width: position.width,
           height: position.height,
         }}
-        className="css-var-r1 pointer-events-none flex justify-center border border-solid border-[--ant-color-primary] transition-all duration-150"
+        className="css-var-r1 pointer-events-none flex justify-center border border-dashed border-[--ant-color-primary] transition-all duration-150"
       >
         <div
           className="pointer-events-auto flex h-5 items-center justify-center rounded-b-md px-2 text-[12px] text-white"

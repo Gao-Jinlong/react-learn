@@ -15,12 +15,15 @@ import { produce } from "immer";
 interface State {
   components: ComponentDto[];
   hoverComponent?: ComponentDto;
+  editComponent?: ComponentDto;
 }
 interface Action {
+  getComponentById: (componentId?: ComponentId) => ComponentDto | undefined;
   addComponent: (component: ComponentConfig, parentId?: ComponentId) => void;
   removeComponent: (id: ComponentId) => void;
   updateComponentProps: (id: ComponentId, props: ComponentPropsUnion) => void;
   setHoverComponent: (componentId?: ComponentId) => void;
+  setEditComponent: (componentId?: ComponentId) => void;
 }
 export interface ComponentStore extends State, Action {}
 
@@ -37,7 +40,10 @@ export const useComponentsStore = create<ComponentStore>()(
         },
       ],
       hoverComponent: undefined,
-
+      editComponent: undefined,
+      getComponentById: (componentId?: ComponentId) => {
+        return getComponentById(componentId, get().components);
+      },
       setHoverComponent: (componentId?: ComponentId) => {
         set(() => ({
           hoverComponent: getComponentById(componentId, get().components),
@@ -48,45 +54,69 @@ export const useComponentsStore = create<ComponentStore>()(
         parentId?: ComponentId,
       ) => {
         set((state) => {
-          const { defaultProps, ...rest } = createComponentDto;
-          const component: ComponentDto = {
-            ...rest,
-            props: { ...defaultProps },
-            id: generateId(),
-          };
-          if (parentId) {
-            const parentComponent = getComponentById(
-              parentId,
-              state.components,
-            );
-            if (parentComponent) {
-              if (parentComponent.children) {
-                parentComponent.children.push(component);
-              } else {
-                parentComponent.children = [component];
-              }
-            }
+          const newComponents = produce(state.components, (draft) => {
+            const { defaultProps, ...rest } = createComponentDto;
+            const component: ComponentDto = {
+              ...rest,
+              props: { ...defaultProps },
+              id: generateId(),
+            };
 
-            component.parentId = parentId;
-          } else {
-            state.components.push(component);
-          }
+            if (parentId) {
+              const parentComponent = getComponentById(parentId, draft);
+
+              if (parentComponent) {
+                if (parentComponent.children) {
+                  parentComponent.children.push(component);
+                } else {
+                  parentComponent.children = [component];
+                }
+
+                component.parentId = parentId;
+              }
+            } else {
+              draft.push(component);
+            }
+          });
+
+          return {
+            ...state,
+            components: newComponents,
+          };
         });
       },
       removeComponent: (componentId: ComponentId) => {
-        if (!componentId) return;
-        const component = getComponentById(componentId, get().components);
-        if (component?.parentId) {
-          const newComponents = produce(get().components, (draft) => {
-            const parent = getComponentById(component.parentId, draft);
-            if (parent && parent.children) {
-              parent.children = parent.children.filter(
-                (child) => child.id !== componentId,
+        set((state) => {
+          if (!componentId) return;
+          const newComponents = produce(state.components, (draft) => {
+            const component = getComponentById(componentId, draft);
+            if (component?.parentId) {
+              const parentComponent = getComponentById(
+                component.parentId,
+                draft,
               );
+              if (parentComponent) {
+                parentComponent.children = parentComponent.children?.filter(
+                  (child) => child.id !== componentId,
+                );
+              }
             }
           });
-          set({ components: newComponents });
-        }
+
+          // 检查是否需要清空 editComponent
+          if (state.editComponent?.id === componentId) {
+            return {
+              ...state,
+              components: newComponents,
+              editComponent: undefined,
+            };
+          } else {
+            return {
+              ...state,
+              components: newComponents,
+            };
+          }
+        });
       },
       updateComponentProps: (
         componentId: ComponentId,
@@ -102,12 +132,16 @@ export const useComponentsStore = create<ComponentStore>()(
 
           return state;
         }),
+      setEditComponent: (componentId?: ComponentId) => {
+        set(() => ({
+          editComponent: getComponentById(componentId, get().components),
+        }));
+      },
     })) as StateCreator<ComponentStore, [], []>,
     {
       partialize: (state) => {
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        const { hoverComponent, ...reset } = state;
-        return reset;
+        const { components } = state;
+        return { components };
       },
       equality: (a, b) => {
         return a.components === b.components;
@@ -125,8 +159,7 @@ function getComponentById(
   for (const component of components) {
     if (component.id === id) return component;
     if (component.children && component.children.length > 0) {
-      const result = getComponentById(id, component.children);
-      if (result !== undefined) return result;
+      return getComponentById(id, component.children);
     }
   }
   return undefined;
