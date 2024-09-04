@@ -1,4 +1,8 @@
-import { ComponentEnum, type ComponentConfig } from "../interface";
+import {
+  ComponentEnum,
+  type ComponentConfig,
+  type ComponentPropsList,
+} from "../interface";
 import Container from "../materials/Container";
 import Button from "../materials/Button";
 import Page from "../materials/Page";
@@ -17,7 +21,6 @@ export const editComponentSetting: EditComponentSettings = {
   [ComponentEnum.Container]: {
     name: ComponentEnum.Container,
     defaultProps: {},
-    component: Container,
   },
   [ComponentEnum.Button]: {
     name: ComponentEnum.Button,
@@ -25,11 +28,17 @@ export const editComponentSetting: EditComponentSettings = {
       type: "primary",
       text: "确定",
     },
-    component: Button,
   },
   [ComponentEnum.Page]: {
     name: ComponentEnum.Page,
     defaultProps: {},
-    component: Page,
   },
+};
+
+export const componentByEnum: {
+  [key in ComponentEnum]: React.FunctionComponent<ComponentPropsList[key]>;
+} = {
+  [ComponentEnum.Container]: Container,
+  [ComponentEnum.Page]: Page,
+  [ComponentEnum.Button]: Button,
 };

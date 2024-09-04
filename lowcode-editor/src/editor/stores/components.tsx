@@ -18,7 +18,6 @@ interface State {
   editComponent?: ComponentDto;
 }
 interface Action {
-  getComponentById: (componentId?: ComponentId) => ComponentDto | undefined;
   addComponent: (component: ComponentConfig, parentId?: ComponentId) => void;
   removeComponent: (id: ComponentId) => void;
   updateComponentProps: (id: ComponentId, props: ComponentPropsUnion) => void;
@@ -41,13 +40,12 @@ export const useComponentsStore = create<ComponentStore>()(
       ],
       hoverComponent: undefined,
       editComponent: undefined,
-      getComponentById: (componentId?: ComponentId) => {
-        return getComponentById(componentId, get().components);
-      },
       setHoverComponent: (componentId?: ComponentId) => {
-        set(() => ({
-          hoverComponent: getComponentById(componentId, get().components),
-        }));
+        set(() => {
+          return {
+            hoverComponent: getComponentById(componentId, get().components),
+          };
+        });
       },
       addComponent: (
         createComponentDto: ComponentConfig,
@@ -61,7 +59,6 @@ export const useComponentsStore = create<ComponentStore>()(
               props: { ...defaultProps },
               id: generateId(),
             };
-
             if (parentId) {
               const parentComponent = getComponentById(parentId, draft);
 
@@ -80,7 +77,6 @@ export const useComponentsStore = create<ComponentStore>()(
           });
 
           return {
-            ...state,
             components: newComponents,
           };
         });
@@ -106,13 +102,11 @@ export const useComponentsStore = create<ComponentStore>()(
           // 检查是否需要清空 editComponent
           if (state.editComponent?.id === componentId) {
             return {
-              ...state,
               components: newComponents,
               editComponent: undefined,
             };
           } else {
             return {
-              ...state,
               components: newComponents,
             };
           }
@@ -155,12 +149,31 @@ function getComponentById(
   components: ComponentDto[],
 ): ComponentDto | undefined {
   if (!id) return undefined;
-
   for (const component of components) {
     if (component.id === id) return component;
     if (component.children && component.children.length > 0) {
-      return getComponentById(id, component.children);
+      const findComponent = getComponentById(id, component.children);
+      if (findComponent) return findComponent;
     }
   }
   return undefined;
+}
+
+export function flattenComponents(
+  components: ComponentDto[],
+): Map<ComponentId, ComponentDto> {
+  const map = new Map<ComponentId, ComponentDto>();
+
+  function dfs(components: ComponentDto[]) {
+    for (const component of components) {
+      map.set(component.id, component);
+      if (component.children && component.children.length > 0) {
+        dfs(component.children);
+      }
+    }
+  }
+
+  dfs(components);
+
+  return map;
 }

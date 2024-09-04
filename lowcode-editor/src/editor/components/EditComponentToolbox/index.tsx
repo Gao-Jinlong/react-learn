@@ -10,7 +10,7 @@ import {
 } from "antd";
 import { useMemo } from "react";
 import { DeleteOutlined } from "@ant-design/icons";
-import { useComponentsStore } from "../../stores/components";
+import { flattenComponents, useComponentsStore } from "../../stores/components";
 
 export interface HoverComponentPanel {
   editComponent?: ComponentDto;
@@ -22,8 +22,12 @@ export default function HoverComponentPanel({
 }: HoverComponentPanel) {
   const { token } = theme.useToken();
 
-  const { removeComponent } = useComponentsStore();
+  const { components, removeComponent } = useComponentsStore();
   const { undo } = useComponentsStore.temporal.getState();
+
+  const flattenedComponents = useMemo(() => {
+    return flattenComponents(components);
+  }, [components]);
 
   const isShow = useMemo(() => !!editComponent, [editComponent]);
 
@@ -52,26 +56,27 @@ export default function HoverComponentPanel({
     const menuItems: MenuProps["items"] = [];
 
     let recuresion = editComponent;
-    while (recuresion?.parent) {
+    while (recuresion?.parentId) {
       menuItems.push({
         key: recuresion.id,
         label: recuresion.name,
       });
-      recuresion = recuresion.parent;
+      recuresion = flattenedComponents.get(recuresion.parentId);
     }
 
     return menuItems;
-  }, [editComponent]);
+  }, [editComponent, flattenedComponents]);
 
   function handleDelete() {
     if (!editComponent) return;
     removeComponent(editComponent.id);
-    // successDelete();
+    successDelete();
   }
 
   function successDelete() {
     message.success({
       key: "delete-success",
+
       content: (
         <div className="flex items-center">
           删除成功
@@ -121,7 +126,7 @@ export default function HoverComponentPanel({
                 className="cursor-pointer hover:text-[var(--ant-red)]"
                 onClick={handleDelete}
               />
-              {/* <Dropdown menu={dropdownMenu}></Dropdown> */}
+              {/* <Dropdown menu={{ items: dropdownMenu }}></Dropdown> */}
             </>
           )}
         </div>

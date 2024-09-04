@@ -1,4 +1,3 @@
-import { type DropTargetMonitor } from "react-dnd";
 import {
   ComponentEnum,
   type BaseComponentProps,
@@ -14,10 +13,7 @@ export default function Container(props: ContainerProps) {
   const { id, children } = props;
   const { addComponent } = useComponentsStore();
 
-  function handleDrop(item: ComponentConfig, monitor: DropTargetMonitor) {
-    if (monitor.didDrop()) {
-      return;
-    }
+  function handleDrop(item: ComponentConfig) {
     addComponent(item, id);
   }
 

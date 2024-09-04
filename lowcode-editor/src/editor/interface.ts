@@ -38,8 +38,6 @@ export interface ComponentConfig<T extends ComponentEnum = ComponentEnum> {
   name: T;
   /** 组件添加时的默认 props */
   defaultProps: Partial<ComponentPropsList[T]>;
-  /** 组件-编辑状态的渲染组件 */
-  component: React.FunctionComponent<ComponentPropsList[T]>;
 }
 export interface CreateComponentDto extends Omit<ComponentDto, "id"> {}
 export interface RenderComponentDto<T extends ComponentEnum = ComponentEnum>

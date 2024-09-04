@@ -6,7 +6,7 @@ import {
   type ComponentPropsList,
   type RenderComponentDto,
 } from "../../interface";
-import { editComponentSetting } from "../../config";
+import { componentByEnum, editComponentSetting } from "../../config";
 import HoverComponentPanel from "../HoverComponentPanel";
 import EditComponentToolbox from "../EditComponentToolbox";
 
@@ -22,7 +22,7 @@ export default function EditArea() {
   function renderComponents(components: ComponentDto[]): React.ReactNode {
     return components.map((component) => {
       const config = editComponentSetting[component.name];
-      const Component = config.component as React.FunctionComponent<
+      const Component = componentByEnum[config.name] as React.FunctionComponent<
         ComponentPropsList[ComponentEnum]
       >;
       if (!Component) {
