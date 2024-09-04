@@ -7,10 +7,13 @@ import {
   Button,
   Dropdown,
   type MenuProps,
+  Tooltip,
 } from "antd";
-import { useMemo } from "react";
+import { useContext, useMemo } from "react";
 import { DeleteOutlined } from "@ant-design/icons";
-import { flattenComponents, useComponentsStore } from "../../stores/components";
+import { useComponentsStore } from "../../stores/components";
+import { EditContext } from "../EditContext";
+import EditComponentToolboxMenu from "./EditComponentToolboxMenu";
 
 export interface HoverComponentPanel {
   editComponent?: ComponentDto;
@@ -22,12 +25,10 @@ export default function HoverComponentPanel({
 }: HoverComponentPanel) {
   const { token } = theme.useToken();
 
-  const { components, removeComponent } = useComponentsStore();
+  const { removeComponent } = useComponentsStore();
   const { undo } = useComponentsStore.temporal.getState();
 
-  const flattenedComponents = useMemo(() => {
-    return flattenComponents(components);
-  }, [components]);
+  const { dropdownMenu } = useContext(EditContext)!;
 
   const isShow = useMemo(() => !!editComponent, [editComponent]);
 
@@ -51,21 +52,6 @@ export default function HoverComponentPanel({
       height,
     };
   }, [editComponent, container]);
-
-  const dropdownMenu = useMemo(() => {
-    const menuItems: MenuProps["items"] = [];
-
-    let recuresion = editComponent;
-    while (recuresion?.parentId) {
-      menuItems.push({
-        key: recuresion.id,
-        label: recuresion.name,
-      });
-      recuresion = flattenedComponents.get(recuresion.parentId);
-    }
-
-    return menuItems;
-  }, [editComponent, flattenedComponents]);
 
   function handleDelete() {
     if (!editComponent) return;
@@ -112,7 +98,9 @@ export default function HoverComponentPanel({
             background: token.colorPrimary,
           }}
         >
-          <div>{editComponent?.name}</div>
+          <Dropdown menu={{ items: dropdownMenu }} trigger={["click"]}>
+            <div className="cursor-pointer">{editComponent?.name}</div>
+          </Dropdown>
 
           {editComponent?.name !== ComponentEnum.Page && (
             <>
@@ -122,11 +110,16 @@ export default function HoverComponentPanel({
                   borderColor: "#fff",
                 }}
               />
-              <DeleteOutlined
-                className="cursor-pointer hover:text-[var(--ant-red)]"
-                onClick={handleDelete}
-              />
-              {/* <Dropdown menu={{ items: dropdownMenu }}></Dropdown> */}
+              <div className="flex items-center gap-1">
+                <Tooltip title={"删除"} arrow={false}>
+                  <DeleteOutlined
+                    className="cursor-pointer"
+                    onClick={handleDelete}
+                  />
+                </Tooltip>
+
+                <EditComponentToolboxMenu />
+              </div>
             </>
           )}
         </div>

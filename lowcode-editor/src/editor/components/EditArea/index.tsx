@@ -9,6 +9,7 @@ import {
 import { componentByEnum, editComponentSetting } from "../../config";
 import HoverComponentPanel from "../HoverComponentPanel";
 import EditComponentToolbox from "../EditComponentToolbox";
+import EditContextProvider from "../EditContext";
 
 export default function EditArea() {
   const {
@@ -80,21 +81,23 @@ export default function EditArea() {
 
   return (
     <>
-      <div
-        className="h-[100%]"
-        onMouseOver={handleMouseOver}
-        onClick={handleClick}
-      >
-        {renderComponents(components)}
-      </div>
-      <HoverComponentPanel
-        container={document.body}
-        hoverComponent={hoverComponent}
-      />
-      <EditComponentToolbox
-        container={document.body}
-        editComponent={editComponent}
-      />
+      <EditContextProvider>
+        <div
+          className="h-[100%]"
+          onMouseOver={handleMouseOver}
+          onClick={handleClick}
+        >
+          {renderComponents(components)}
+        </div>
+        <HoverComponentPanel
+          container={document.body}
+          hoverComponent={hoverComponent}
+        />
+        <EditComponentToolbox
+          container={document.body}
+          editComponent={editComponent}
+        />
+      </EditContextProvider>
     </>
   );
 }

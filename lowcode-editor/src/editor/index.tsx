@@ -13,7 +13,7 @@ export default function Editor() {
       </div>
       <Allotment>
         <Allotment.Pane preferredSize={240} maxSize={300} minSize={200}>
-          <div className="h-full w-full bg-red-500">
+          <div className="h-full w-full">
             <Material />
           </div>
         </Allotment.Pane>
