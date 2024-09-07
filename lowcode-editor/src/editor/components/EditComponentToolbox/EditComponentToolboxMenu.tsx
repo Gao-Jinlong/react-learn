@@ -19,7 +19,7 @@ export default function EditComponentToolboxMenu() {
         items: [
           {
             key: "",
-            label: "更多",
+            label: "层级选择",
             children: dropdownMenu,
           },
         ],

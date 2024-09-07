@@ -33,8 +33,9 @@ export const useComponentsStore = create<ComponentStore>()(
         {
           id: generateId(),
           name: ComponentEnum.Page,
+          label: "页面",
           props: {},
-          desc: "页面",
+          desc: "根容器",
           children: [],
         },
       ],

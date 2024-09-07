@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useRef } from "react";
 import { useComponentsStore } from "../../stores/components";
 import {
   type ComponentDto,
@@ -12,13 +12,10 @@ import EditComponentToolbox from "../EditComponentToolbox";
 import EditContextProvider from "../EditContext";
 
 export default function EditArea() {
-  const {
-    components,
-    hoverComponent,
-    setHoverComponent,
-    editComponent,
-    setEditComponent,
-  } = useComponentsStore();
+  const { components, setHoverComponent, editComponent, setEditComponent } =
+    useComponentsStore();
+
+  const container = useRef<HTMLDivElement>(null);
 
   function renderComponents(components: ComponentDto[]): React.ReactNode {
     return components.map((component) => {
@@ -86,17 +83,12 @@ export default function EditArea() {
           className="h-[100%]"
           onMouseOver={handleMouseOver}
           onClick={handleClick}
+          ref={container}
         >
           {renderComponents(components)}
         </div>
-        <HoverComponentPanel
-          container={document.body}
-          hoverComponent={hoverComponent}
-        />
-        <EditComponentToolbox
-          container={document.body}
-          editComponent={editComponent}
-        />
+        <HoverComponentPanel container={container} />
+        <EditComponentToolbox container={container} />
       </EditContextProvider>
     </>
   );

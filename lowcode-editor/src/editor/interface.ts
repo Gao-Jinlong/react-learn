@@ -22,9 +22,9 @@ export enum ComponentEnum {
 
 export type ComponentPropsUnion = ContainerProps | ButtonProps | PageProps;
 
-export interface ComponentDto<N extends ComponentEnum = ComponentEnum> {
+export interface ComponentDto<N extends ComponentEnum = ComponentEnum>
+  extends Omit<ComponentConfig<N>, "defaultProps"> {
   id: ComponentId;
-  name: N;
   props: EditableProps<ComponentPropsList[N]>;
   children?: ComponentDto[];
   parentId?: ComponentId;
@@ -35,6 +35,9 @@ export interface ComponentDto<N extends ComponentEnum = ComponentEnum> {
  * 组件编辑状态下所需的配置，如组件添加时的默认配置
  */
 export interface ComponentConfig<T extends ComponentEnum = ComponentEnum> {
+  /** 组件显示名称 */
+  label: string;
+  /** 组件类型 */
   name: T;
   /** 组件添加时的默认 props */
   defaultProps: Partial<ComponentPropsList[T]>;

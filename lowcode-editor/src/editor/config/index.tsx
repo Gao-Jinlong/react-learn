@@ -20,10 +20,12 @@ export interface EditComponentSettings {
 export const editComponentSetting: EditComponentSettings = {
   [ComponentEnum.Container]: {
     name: ComponentEnum.Container,
+    label: "容器",
     defaultProps: {},
   },
   [ComponentEnum.Button]: {
     name: ComponentEnum.Button,
+    label: "按钮",
     defaultProps: {
       type: "primary",
       text: "确定",
@@ -31,6 +33,7 @@ export const editComponentSetting: EditComponentSettings = {
   },
   [ComponentEnum.Page]: {
     name: ComponentEnum.Page,
+    label: "页面",
     defaultProps: {},
   },
 };
