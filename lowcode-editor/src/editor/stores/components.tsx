@@ -20,7 +20,10 @@ interface State {
 interface Action {
   addComponent: (component: ComponentConfig, parentId?: ComponentId) => void;
   removeComponent: (id: ComponentId) => void;
-  updateComponentProps: (id: ComponentId, props: ComponentPropsUnion) => void;
+  updateComponentProps: (
+    id: ComponentId,
+    props: Partial<ComponentPropsUnion>,
+  ) => void;
   setHoverComponent: (componentId?: ComponentId) => void;
   setEditComponent: (componentId?: ComponentId) => void;
 }
@@ -118,14 +121,16 @@ export const useComponentsStore = create<ComponentStore>()(
         props: EditableProps<Partial<ComponentPropsUnion>>,
       ) =>
         set((state) => {
-          const component = getComponentById(componentId, state.components);
-          if (component) {
-            component.props = { ...component.props, ...props };
+          const newComponents = produce(state.components, (draft) => {
+            const component = getComponentById(componentId, draft);
+            if (component) {
+              component.props = { ...component.props, ...props };
+            }
+          });
 
-            return state;
-          }
-
-          return state;
+          return {
+            components: newComponents,
+          };
         }),
       setEditComponent: (componentId?: ComponentId) => {
         set(() => ({
