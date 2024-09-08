@@ -88,12 +88,13 @@ export const useComponentsStore = create<ComponentStore>()(
       removeComponent: (componentId: ComponentId) => {
         set((state) => {
           if (!componentId) return;
-          const newComponents = produce(state.components, (draft) => {
-            const component = getComponentById(componentId, draft);
+
+          return produce(state, (draft) => {
+            const component = getComponentById(componentId, draft.components);
             if (component?.parentId) {
               const parentComponent = getComponentById(
                 component.parentId,
-                draft,
+                draft.components,
               );
               if (parentComponent) {
                 parentComponent.children = parentComponent.children?.filter(
@@ -101,19 +102,15 @@ export const useComponentsStore = create<ComponentStore>()(
                 );
               }
             }
-          });
 
-          // 检查是否需要清空 editComponent
-          if (state.editComponent?.id === componentId) {
-            return {
-              components: newComponents,
-              editComponent: undefined,
-            };
-          } else {
-            return {
-              components: newComponents,
-            };
-          }
+            // 检查是否需要清空 editComponent
+            if (component) {
+              const editComponent = draft.editComponent;
+              if (editComponent && isChildren(component, editComponent.id)) {
+                draft.editComponent = undefined;
+              }
+            }
+          });
         });
       },
       updateComponentProps: (
@@ -163,6 +160,13 @@ function getComponentById(
     }
   }
   return undefined;
+}
+
+function isChildren(component: ComponentDto, id: ComponentId): boolean {
+  if (!component.children) return false;
+  return component.children.some(
+    (child) => child.id === id || isChildren(child, id),
+  );
 }
 
 export function flattenComponents(
