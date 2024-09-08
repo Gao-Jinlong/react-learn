@@ -1,4 +1,4 @@
-import type { PropsWithChildren } from "react";
+import type { CSSProperties, PropsWithChildren } from "react";
 import type { ContainerProps } from "./materials/Container";
 import type { PageProps } from "./materials/Page";
 import type { ButtonProps } from "./materials/Button";
@@ -8,6 +8,7 @@ export type ComponentId = string;
 export interface BaseComponentProps extends PropsWithChildren {
   id: ComponentId;
   name: ComponentEnum;
+  style?: CSSProperties;
 }
 
 export type EditableProps<T extends Partial<BaseComponentProps>> = Omit<

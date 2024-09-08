@@ -7,9 +7,9 @@ import {
   type RenderComponentDto,
 } from "../../interface";
 import { componentByEnum, editComponentSetting } from "../../config";
-import HoverComponentPanel from "../HoverComponentPanel";
-import EditComponentToolbox from "../EditComponentToolbox";
-import EditContextProvider from "../EditContext";
+import HoverComponentPanel from "./HoverComponentPanel";
+import EditComponentToolbox from "./EditComponentToolbox";
+import EditContextProvider from "./EditContext";
 
 export default function EditArea() {
   const { components, setHoverComponent, editComponent, setEditComponent } =
@@ -96,7 +96,7 @@ export default function EditArea() {
 
 function transformPropsToRender(dto: ComponentDto): RenderComponentDto {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const { props, children, ...rest } = dto;
+  const { props, children, parentId, ...rest } = dto;
 
   return {
     ...props,

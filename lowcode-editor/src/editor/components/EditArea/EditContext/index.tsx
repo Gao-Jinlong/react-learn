@@ -1,6 +1,9 @@
 import { createContext, useMemo, type PropsWithChildren } from "react";
-import type { ComponentDto, ComponentId } from "../../interface";
-import { flattenComponents, useComponentsStore } from "../../stores/components";
+import type { ComponentDto, ComponentId } from "../../../interface";
+import {
+  flattenComponents,
+  useComponentsStore,
+} from "../../../stores/components";
 import type { MenuProps } from "antd";
 
 export interface EditContextProps extends PropsWithChildren {}
@@ -23,7 +26,7 @@ export default function EditContextProvider({ children }: EditContextProps) {
       while (recursion) {
         menuItems.push({
           key: recursion.id,
-          label: <div>{recursion.name}</div>,
+          label: <div>{recursion.label}</div>,
         });
         recursion = recursion.parentId
           ? flattenedComponents.get(recursion.parentId)

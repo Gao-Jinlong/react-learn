@@ -21,7 +21,14 @@ export const editComponentSetting: EditComponentSettings = {
   [ComponentEnum.Container]: {
     name: ComponentEnum.Container,
     label: "容器",
-    defaultProps: {},
+    defaultProps: {
+      style: {
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        justifyContent: "center",
+      },
+    },
   },
   [ComponentEnum.Button]: {
     name: ComponentEnum.Button,
@@ -29,6 +36,10 @@ export const editComponentSetting: EditComponentSettings = {
     defaultProps: {
       type: "primary",
       text: "确定",
+      style: {
+        width: "auto",
+        height: "auto",
+      },
     },
   },
   [ComponentEnum.Page]: {

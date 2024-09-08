@@ -4,7 +4,7 @@ import {
   ComponentEnum,
   type ComponentConfig,
 } from "../../interface";
-import EditorComponentWrapper from "../../components/EditorComponentWrapper";
+import EditorComponentWrapper from "../../components/EditArea/EditorComponentWrapper";
 
 export interface PageProps extends BaseComponentProps {}
 

@@ -4,13 +4,14 @@ import {
   type ComponentConfig,
 } from "../../interface";
 import { useComponentsStore } from "../../stores/components";
-import EditorComponentWrapper from "../../components/EditorComponentWrapper";
+import EditorComponentWrapper from "../../components/EditArea/EditorComponentWrapper";
 import classNames from "classnames";
 
 export interface ContainerProps extends BaseComponentProps {}
 
 export default function Container(props: ContainerProps) {
   const { id, children } = props;
+  console.log("🚀 ~ Container ~ props:", props);
   const { addComponent } = useComponentsStore();
 
   function handleDrop(item: ComponentConfig) {

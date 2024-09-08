@@ -53,7 +53,7 @@ export default function ButtonBaseEditor(props: ButtonBaseEditorProps) {
       <Form.Item label="形状">
         <Select
           onChange={(value) => handleChange("shape", value)}
-          defaultValue={editComponent.props.shape}
+          defaultValue={editComponent.props.shape ?? "default"}
         >
           <Select.Option value="default">默认</Select.Option>
           <Select.Option value="circle">圆形</Select.Option>

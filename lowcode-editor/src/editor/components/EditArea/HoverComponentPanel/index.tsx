@@ -2,9 +2,9 @@ import { createPortal } from "react-dom";
 import { theme, Divider, message, Button } from "antd";
 import { useMemo, type RefObject } from "react";
 import { DeleteOutlined } from "@ant-design/icons";
-import { useComponentsStore } from "../../stores/components";
-import { ComponentEnum } from "../../interface";
-import useListenerResize from "../../../hooks/useListenerResize";
+import { useComponentsStore } from "../../../stores/components";
+import { ComponentEnum } from "../../../interface";
+import useListenerResize from "../../../../hooks/useListenerResize";
 
 export interface HoverComponentPanel {
   container: RefObject<HTMLElement>;

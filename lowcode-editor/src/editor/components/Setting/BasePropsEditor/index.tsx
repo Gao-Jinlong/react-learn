@@ -1,5 +1,4 @@
-import { Form, Input } from "antd";
-import { useComponentsStore } from "../../../stores/components";
+import { Form } from "antd";
 import {
   ComponentEnum,
   type ComponentDto,
@@ -7,19 +6,15 @@ import {
   type EditableProps,
 } from "../../../interface";
 import ButtonBaseEditor from "./ButtonBaseEditor";
-import { useCallback } from "react";
+import { useCallback, useContext } from "react";
+import { SettingContext } from "../SettingContext";
 
-function isButtonProps(
-  props: ComponentDto,
-): props is ComponentDto<ComponentEnum.Button> {
-  return props.name === ComponentEnum.Button;
-}
 export default function BasePropsEditor() {
-  const { editComponent, updateComponentProps } = useComponentsStore();
+  const { editComponent, updateComponentProps } = useContext(SettingContext)!;
 
   const handlePropsChange = useCallback(
     (props: Partial<EditableProps<ComponentPropsUnion>>) => {
-      updateComponentProps(editComponent!.id, props);
+      updateComponentProps?.(editComponent!.id, props);
     },
     [editComponent, updateComponentProps],
   );
@@ -38,4 +33,10 @@ export default function BasePropsEditor() {
       </div>
     )
   );
+}
+
+function isButtonProps(
+  props: ComponentDto,
+): props is ComponentDto<ComponentEnum.Button> {
+  return props.name === ComponentEnum.Button;
 }

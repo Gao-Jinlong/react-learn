@@ -1,20 +1,40 @@
-import { useState } from "react";
-import { useComponentsStore } from "../../stores/components";
 import BasePropsEditor from "./BasePropsEditor";
-import { Collapse } from "antd";
+import { Tabs, type TabsProps } from "antd";
+import styles from "./index.module.css";
+import StylePanel from "./StylePanel";
+import SettingContextProvider from "./SettingContext";
+
 export default function Setting() {
-  const [activeKey] = useState(["baseProps"]);
-  const { editComponent } = useComponentsStore();
+  const tabs: TabsProps["items"] = [
+    {
+      key: "property",
+      label: "属性",
+      children: <BasePropsEditor />,
+    },
+    {
+      key: "style",
+      label: "样式",
+      children: <StylePanel />,
+    },
+    {
+      key: "event",
+      label: "事件",
+      children: <div>事件</div>,
+    },
+  ];
 
   return (
-    editComponent && (
-      <div className="flex h-full flex-col gap-2 overflow-auto">
-        <Collapse defaultActiveKey={activeKey}>
-          <Collapse.Panel header="基础属性" key="baseProps">
-            <BasePropsEditor />
-          </Collapse.Panel>
-        </Collapse>
-      </div>
-    )
+    <SettingContextProvider>
+      <Tabs
+        className={styles["setting-view"]}
+        centered={true}
+        tabBarStyle={{
+          width: "100%",
+          display: "flex",
+          justifyContent: "center",
+        }}
+        items={tabs}
+      />
+    </SettingContextProvider>
   );
 }

@@ -1,6 +1,6 @@
 import { useMemo } from "react";
 import { useComponentConfigStore } from "../../stores/component-config";
-import MaterialItem from "../MaterialItem";
+import MaterialItem from "./MaterialItem";
 import { ComponentEnum, type ComponentConfig } from "../../interface";
 
 export default function Material() {

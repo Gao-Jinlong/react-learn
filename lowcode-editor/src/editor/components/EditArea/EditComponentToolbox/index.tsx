@@ -1,4 +1,4 @@
-import { ComponentEnum } from "../../interface";
+import { ComponentEnum } from "../../../interface";
 import { createPortal } from "react-dom";
 import {
   theme,
@@ -17,11 +17,11 @@ import {
   type RefObject,
 } from "react";
 import { DeleteOutlined } from "@ant-design/icons";
-import { useComponentsStore } from "../../stores/components";
+import { useComponentsStore } from "../../../stores/components";
 import { EditContext } from "../EditContext";
 import EditComponentToolboxMenu from "./EditComponentToolboxMenu";
-import useListenerResize from "../../../hooks/useListenerResize";
-import cn from "classnames";
+import useListenerResize from "../../../../hooks/useListenerResize";
+import classNames from "classnames";
 
 export interface HoverComponentPanel {
   container: RefObject<HTMLElement>;
@@ -134,8 +134,8 @@ export default function HoverComponentPanel({
               width: position.width,
               height: position.height,
             }}
-            className={cn(
-              "css-var-r1 pointer-events-none relative flex justify-start transition-all duration-150",
+            className={classNames(
+              "css-var-r1 zIndex-1000 pointer-events-none relative flex justify-start transition-all duration-150",
               {
                 "border border-solid border-[--ant-color-primary]":
                   editComponent && editComponent?.name !== ComponentEnum.Button,
@@ -143,7 +143,12 @@ export default function HoverComponentPanel({
             )}
           >
             <div
-              className="pointer-events-auto absolute left-0 top-0 flex h-5 -translate-y-full items-center justify-center px-2 text-[12px] text-white"
+              className={classNames(
+                "pointer-events-auto absolute left-0 top-0 flex h-5 items-center justify-center px-2 text-[12px] text-white transition-all duration-150",
+                {
+                  "-translate-y-full": position.top > 10,
+                },
+              )}
               style={{
                 background: token.colorPrimary,
               }}

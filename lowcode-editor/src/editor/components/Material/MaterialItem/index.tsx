@@ -1,5 +1,5 @@
 import { useDrag } from "react-dnd";
-import type { ComponentConfig, ComponentEnum } from "../../interface";
+import type { ComponentConfig, ComponentEnum } from "../../../interface";
 
 export interface MaterialItemProps extends ComponentConfig {
   name: ComponentEnum;

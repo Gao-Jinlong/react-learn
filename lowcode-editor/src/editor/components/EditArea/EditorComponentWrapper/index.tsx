@@ -1,6 +1,9 @@
 import { useDrop, type DropTargetMonitor } from "react-dnd";
-import { type BaseComponentProps, type ComponentConfig } from "../../interface";
-import { handleDropWrapper } from "../../utils/dndUtils";
+import {
+  type BaseComponentProps,
+  type ComponentConfig,
+} from "../../../interface";
+import { handleDropWrapper } from "../../../utils/dndUtils";
 import classNames from "classnames";
 
 export interface EditorComponentWrapperProps extends BaseComponentProps {
@@ -14,6 +17,7 @@ export default function EditorComponentWrapper({
   className,
   dropOptions,
   id,
+  style,
 }: EditorComponentWrapperProps) {
   const [{ canDrop, isOverCurrent }, drop] = useDrop(
     {
@@ -38,6 +42,7 @@ export default function EditorComponentWrapper({
         },
         className,
       )}
+      style={style}
     >
       {children}
     </div>

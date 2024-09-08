@@ -1,6 +1,6 @@
 import { Dropdown, Tooltip, type MenuProps } from "antd";
 import { MoreOutlined } from "@ant-design/icons";
-import { useComponentsStore } from "../../stores/components";
+import { useComponentsStore } from "../../../stores/components";
 import { useContext } from "react";
 import { EditContext } from "../EditContext";
 
