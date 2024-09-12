@@ -23,10 +23,8 @@ export const editComponentSetting: EditComponentSettings = {
     label: "容器",
     defaultProps: {
       style: {
+        width: "100%",
         display: "flex",
-        flexDirection: "column",
-        alignItems: "center",
-        justifyContent: "center",
       },
     },
   },
@@ -38,7 +36,6 @@ export const editComponentSetting: EditComponentSettings = {
       text: "确定",
       style: {
         width: "auto",
-        height: "auto",
       },
     },
   },
