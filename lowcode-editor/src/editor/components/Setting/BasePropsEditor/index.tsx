@@ -10,26 +10,12 @@ import { useCallback, useContext } from "react";
 import { SettingContext } from "../SettingContext";
 
 export default function BasePropsEditor() {
-  const { editComponent, updateComponentProps } = useContext(SettingContext)!;
-
-  const handlePropsChange = useCallback(
-    (props: Partial<EditableProps<ComponentPropsUnion>>) => {
-      updateComponentProps?.(editComponent!.id, props);
-    },
-    [editComponent, updateComponentProps],
-  );
+  const { editComponent } = useContext(SettingContext)!;
 
   return (
     editComponent && (
       <div>
-        <Form>
-          {isButtonProps(editComponent) && (
-            <ButtonBaseEditor
-              editComponent={editComponent}
-              updateComponentProps={handlePropsChange}
-            />
-          )}
-        </Form>
+        <Form>{isButtonProps(editComponent) && <ButtonBaseEditor />}</Form>
       </div>
     )
   );

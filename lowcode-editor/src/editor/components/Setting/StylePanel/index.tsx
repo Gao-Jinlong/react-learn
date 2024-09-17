@@ -1,8 +1,16 @@
 import { useContext } from "react";
 import { SettingContext } from "../SettingContext";
+import BaseProperty from "./BaseProperty";
+import { Form } from "antd";
 
 export default function StylePanel() {
-  const { editComponent, updateComponentProps } = useContext(SettingContext)!;
+  const { editComponent } = useContext(SettingContext)!;
 
-  return <div>{JSON.stringify(editComponent?.props.style, null, 2)}</div>;
+  return (
+    <div>
+      <Form>
+        <BaseProperty />
+      </Form>
+    </div>
+  );
 }

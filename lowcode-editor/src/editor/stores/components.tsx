@@ -42,6 +42,8 @@ export const useComponentsStore = create<ComponentStore>()(
           children: [],
         },
       ],
+      // TODO: 应该始终维持数据的唯一性，因此 hoverComponent 和 editComponent 应该为 ComponentId ，而不是 ComponentDto
+      // 负责修改了 components 后，需要同步更新 hoverComponent 和 editComponent
       hoverComponent: undefined,
       editComponent: undefined,
       setHoverComponent: (componentId?: ComponentId) => {
@@ -127,6 +129,7 @@ export const useComponentsStore = create<ComponentStore>()(
 
           return {
             components: newComponents,
+            editComponent: getComponentById(componentId, newComponents),
           };
         }),
       setEditComponent: (componentId?: ComponentId) => {

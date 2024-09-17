@@ -1,12 +1,18 @@
-import { createContext, type PropsWithChildren } from "react";
+import {
+  createContext,
+  type PropsWithChildren,
+  useState,
+  useEffect,
+} from "react";
 import {
   useComponentsStore,
   type ComponentStore,
 } from "../../../stores/components";
 
-export interface SettingContext extends Partial<ComponentStore> {}
+export interface SettingContext extends ComponentStore {}
 export const SettingContext = createContext<SettingContext | null>(null);
 export interface SettingContextProps extends PropsWithChildren {}
+
 export default function SettingContextProvider({
   children,
 }: SettingContextProps) {

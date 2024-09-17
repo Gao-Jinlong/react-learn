@@ -1,11 +1,10 @@
+import { useContext, useEffect, useMemo, useState } from "react";
 import { Form, Input, Select } from "antd";
-import type {
-  ComponentDto,
-  ComponentEnum,
-  EditableProps,
-} from "../../../interface";
+
 import type { ButtonProps } from "../../../materials/Button";
 import type { ButtonType } from "antd/es/button";
+import { SettingContext } from "../SettingContext";
+import type { EditableProps } from "../../../interface";
 
 const typeOptions: { label: string; value: ButtonType }[] = [
   { label: "默认", value: "default" },
@@ -14,18 +13,23 @@ const typeOptions: { label: string; value: ButtonType }[] = [
   { label: "链接", value: "link" },
   { label: "文本", value: "text" },
 ];
-export interface ButtonBaseEditorProps {
-  editComponent: ComponentDto<ComponentEnum.Button>;
-  updateComponentProps: (props: Partial<EditableProps<ButtonProps>>) => void;
-}
-export default function ButtonBaseEditor(props: ButtonBaseEditorProps) {
-  const { editComponent, updateComponentProps } = props;
+
+export default function ButtonBaseEditor() {
+  const { editComponent, updateComponentProps } = useContext(SettingContext)!;
+  const [editProps, setEditProps] = useState<EditableProps<ButtonProps>>();
+
+  useEffect(() => {
+    setEditProps(editComponent?.props as EditableProps<ButtonProps>);
+  }, [editComponent?.props]);
 
   const handleChange = <K extends keyof ButtonProps>(
     key: K,
     value: ButtonProps[K],
   ) => {
-    updateComponentProps({
+    if (!editComponent) {
+      return;
+    }
+    updateComponentProps(editComponent.id, {
       [key]: value,
     });
   };
@@ -34,14 +38,14 @@ export default function ButtonBaseEditor(props: ButtonBaseEditorProps) {
     <>
       <Form.Item label="名称">
         <Input
-          defaultValue={editComponent.props.text}
+          value={editProps?.text ?? ""}
           onChange={(e) => handleChange("text", e.target.value)}
         />
       </Form.Item>
       <Form.Item label="类型">
         <Select
           onChange={(value) => handleChange("type", value)}
-          defaultValue={editComponent.props.type}
+          value={editProps?.type ?? "default"}
         >
           {typeOptions.map((option) => (
             <Select.Option key={option.value} value={option.value}>
@@ -53,7 +57,7 @@ export default function ButtonBaseEditor(props: ButtonBaseEditorProps) {
       <Form.Item label="形状">
         <Select
           onChange={(value) => handleChange("shape", value)}
-          defaultValue={editComponent.props.shape ?? "default"}
+          value={editProps?.shape ?? "default"}
         >
           <Select.Option value="default">默认</Select.Option>
           <Select.Option value="circle">圆形</Select.Option>
