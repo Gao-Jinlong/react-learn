@@ -7,7 +7,7 @@ export default defineConfig({
   initialState: {},
   request: {},
   layout: {
-    title: '@umijs/max',
+    title: '@umijs/max learn',
   },
   routes: [
     {
@@ -32,4 +32,3 @@ export default defineConfig({
   ],
   npmClient: 'pnpm',
 });
-
