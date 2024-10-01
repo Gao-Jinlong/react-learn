@@ -1,4 +1,5 @@
 import CountDisplay from '@/components/CountDisplay';
+import DataView from '@/components/DataView';
 import Guide from '@/components/Guide';
 import IncrementCount from '@/components/IncrementCount';
 import { trim } from '@/utils/format';
@@ -19,6 +20,8 @@ const HomePage: React.FC = () => {
 
       <CountDisplay />
       <IncrementCount />
+
+      <DataView />
     </PageContainer>
   );
 };

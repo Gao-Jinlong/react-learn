@@ -1,9 +1,11 @@
+import { defineMock } from '@umijs/max';
+
 const users = [
   { id: 0, name: 'Umi', nickName: 'U', gender: 'MALE' },
   { id: 1, name: 'Fish', nickName: 'B', gender: 'FEMALE' },
 ];
 
-export default {
+export default defineMock({
   'GET /api/v1/queryUserList': (req: any, res: any) => {
     res.json({
       success: true,
@@ -17,4 +19,4 @@ export default {
       errorCode: 0,
     });
   },
-};
+});

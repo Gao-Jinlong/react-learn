@@ -5,7 +5,10 @@ export default defineConfig({
   access: {},
   model: {},
   initialState: {},
-  request: {},
+  // mock: false,
+  request: {
+    dataField: 'data',
+  },
   layout: {
     title: '@umijs/max learn',
   },
