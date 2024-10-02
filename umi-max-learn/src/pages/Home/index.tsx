@@ -19,7 +19,10 @@ const HomePage: React.FC = () => {
       </div>
 
       <CountDisplay />
+      <div className="m-2"></div>
       <IncrementCount />
+
+      <div className="m-4"></div>
 
       <DataView />
     </PageContainer>

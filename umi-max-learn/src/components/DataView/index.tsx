@@ -10,7 +10,7 @@ export default function DataView() {
   if (error) {
     return (
       <div>
-        <div>{JSON.stringify(error)}</div>
+        <pre>{JSON.stringify(error, null, 2)}</pre>
         <div>
           <button type="button" onClick={handleLoad}>
             reload
@@ -22,10 +22,13 @@ export default function DataView() {
 
   return (
     <div>
-      {data ? <div>{JSON.stringify(data)}</div> : 'no data'}
-
+      {data ? <pre>{JSON.stringify(data, null, 2)}</pre> : 'no data'}
       <div>
-        <button type="button" onClick={handleLoad}>
+        <button
+          type="button"
+          className="w-24 line-height-relaxed"
+          onClick={handleLoad}
+        >
           load data
         </button>
       </div>

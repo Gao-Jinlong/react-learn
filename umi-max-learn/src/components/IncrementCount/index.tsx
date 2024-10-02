@@ -8,7 +8,12 @@ export default function IncrementCount() {
   console.log('render: IncrementCount');
 
   return (
-    <button onClick={increment} type="button">
+    <button
+      className="w-24 bg-gradient-from-light line-height-relaxed
+      "
+      onClick={increment}
+      type="button"
+    >
       Count++
     </button>
   );
