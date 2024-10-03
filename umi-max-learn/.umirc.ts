@@ -9,6 +9,7 @@ export default defineConfig({
   request: {
     dataField: 'data',
   },
+  clientLoader: {},
   layout: {
     title: '@umijs/max learn',
   },
@@ -31,6 +32,11 @@ export default defineConfig({
       name: ' CRUD 示例',
       path: '/table',
       component: './Table',
+    },
+    {
+      name: 'clientLoader',
+      path: '/clientLoader',
+      component: './ClientLoader',
     },
   ],
   npmClient: 'pnpm',
