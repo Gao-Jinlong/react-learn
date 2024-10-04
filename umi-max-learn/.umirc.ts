@@ -5,6 +5,7 @@ export default defineConfig({
   access: {},
   model: {},
   initialState: {},
+  define: { MY_TOKEN: process.env.MY_TOKEN },
   // mock: false,
   request: {
     dataField: 'data',

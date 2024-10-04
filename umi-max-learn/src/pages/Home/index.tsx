@@ -12,6 +12,8 @@ const HomePage: React.FC = () => {
 
   console.log('render: HomePage');
 
+  console.log('process.env: ', process.env);
+
   return (
     <PageContainer>
       <div className={styles.container}>
