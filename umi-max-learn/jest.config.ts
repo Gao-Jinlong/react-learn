@@ -1,7 +1,7 @@
 import { Config, configUmiAlias, createConfig } from '@umijs/max/test';
 
 export default async () => {
-  try{
+  try {
     return (await configUmiAlias({
       ...createConfig({
         target: 'browser',
@@ -15,10 +15,30 @@ export default async () => {
         'src/**/*.{ts,js,tsx,jsx}',
         '!src/.umi/**',
         '!src/.umi-test/**',
-        '!src/.umi-production/**'
+        '!src/.umi-production/**',
       ],
+      // transform: {
+      //   '^.+\\.tsx?$': [
+      //     'ts-jest',
+      //     {
+      //       tsconfig: {
+      //         module: 'esnext', // 或 'es2015'
+      //       },
+      //     },
+      //   ],
+      // },
       // if you require some es-module npm package, please uncomment below line and insert your package name
-      // transformIgnorePatterns: ['node_modules/(?!.*(lodash-es|your-es-pkg-name)/)']
+      transformIgnorePatterns: ['node_modules/(?!.*(lodash-es)/)'],
+      globals: {
+        'ts-jest': {
+          tsconfig: {
+            extends: './src/.umi/tsconfig.json',
+            compilerOptions: {
+              module: 'preserve',
+            },
+          },
+        },
+      },
     })) as Config.InitialOptions;
   } catch (e) {
     console.log(e);

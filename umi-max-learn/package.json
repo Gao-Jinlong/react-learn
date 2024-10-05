@@ -1,6 +1,7 @@
 {
   "private": true,
   "author": "gao-jinlong <2675130594@qq.com>",
+  "module": "ES2022",
   "scripts": {
     "dev": "max dev",
     "build": "max build",
@@ -20,6 +21,8 @@
     "classnames": "^2.5.1"
   },
   "devDependencies": {
+    "@babel/core": "^7.25.7",
+    "@babel/preset-env": "^7.25.7",
     "@testing-library/jest-dom": "^5",
     "@testing-library/react": "^14",
     "@types/jest": "^29",
@@ -27,9 +30,11 @@
     "@types/react": "^18.0.33",
     "@types/react-dom": "^18.0.11",
     "@types/testing-library__jest-dom": "^5.14.5",
+    "babel-jest": "^29.7.0",
+    "babel-loader": "^9.2.1",
     "cross-env": "^7.0.3",
     "husky": "^9",
-    "jest": "^29",
+    "jest": "^29.7.0",
     "jest-environment-jsdom": "^29",
     "lint-staged": "^13.2.0",
     "mockjs": "^1.1.0",
