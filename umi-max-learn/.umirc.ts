@@ -39,6 +39,16 @@ export default defineConfig({
       path: '/clientLoader',
       component: './ClientLoader',
     },
+    {
+      name: '地图可视化',
+      path: '/mapView',
+      component: './MapView',
+    },
+    {
+      name: 'Zoomify 可视化',
+      path: '/zoomifyView',
+      component: './ZoomifyView',
+    },
   ],
   npmClient: 'pnpm',
   plugins: [require.resolve('@umijs/plugins/dist/unocss')],
