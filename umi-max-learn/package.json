@@ -19,7 +19,8 @@
     "@unocss/cli": "^0.63.2",
     "antd": "^5.4.0",
     "classnames": "^2.5.1",
-    "ol": "^10.2.1"
+    "ol": "^10.2.1",
+    "pixi.js": "^8.5.2"
   },
   "devDependencies": {
     "@babel/core": "^7.25.7",

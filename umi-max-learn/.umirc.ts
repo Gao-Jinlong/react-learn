@@ -49,6 +49,11 @@ export default defineConfig({
       path: '/zoomifyView',
       component: './ZoomifyView',
     },
+    {
+      name: 'Pixijs',
+      path: '/pixiView',
+      component: './PixiView',
+    },
   ],
   npmClient: 'pnpm',
   plugins: [require.resolve('@umijs/plugins/dist/unocss')],
