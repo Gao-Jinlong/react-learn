@@ -45,6 +45,7 @@
     "prettier-plugin-packagejson": "^2.4.3",
     "ts-node": "^10",
     "typescript": "^5",
-    "unocss": "^0.63.2"
+    "unocss": "^0.63.2",
+    "tailwindcss": "^3"
   }
 }

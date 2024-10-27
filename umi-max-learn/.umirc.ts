@@ -1,7 +1,15 @@
 import { defineConfig } from '@umijs/max';
 
 export default defineConfig({
-  antd: {},
+  antd: {
+    theme: {
+      token: {
+        colorPrimary: '#00b96b',
+        paddingInlinePageContainerContent: '0px',
+        paddingBlockPageContainerContent: '0px',
+      },
+    },
+  },
   access: {},
   model: {},
   initialState: {},
@@ -54,11 +62,18 @@ export default defineConfig({
       path: '/pixiView',
       component: './PixiView',
     },
+    {
+      name: 'Pixi Tinting',
+      path: '/pixiTinting',
+      component: './PixiTinting',
+    },
   ],
+
   npmClient: 'pnpm',
   plugins: [require.resolve('@umijs/plugins/dist/unocss')],
   unocss: {
     // 检测 className 的文件范围，若项目不包含 src 目录，可使用 `pages/**/*.tsx`
     watch: ['src/**/*.tsx'],
   },
+  tailwindcss: {},
 });

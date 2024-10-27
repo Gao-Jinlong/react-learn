@@ -5,7 +5,11 @@ const PixiView = () => {
   async function initPixi() {
     const app = new Application();
 
-    await app.init({ background: '#1099bb', resizeTo: window });
+    await app.init({
+      background: '#000000',
+      resizeTo: window,
+      backgroundAlpha: 0,
+    });
 
     document.getElementById('pixi-container')?.appendChild(app.view);
 

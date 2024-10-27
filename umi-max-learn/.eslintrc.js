@@ -13,5 +13,6 @@ module.exports = {
         ignoreRestSiblings: true,
       },
     ],
+    '@typescript-eslint/no-use-before-define': 'off',
   },
 };
