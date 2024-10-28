@@ -72,6 +72,11 @@ export default defineConfig({
       path: '/pixiRenderTree',
       component: './PixiRenderTree',
     },
+    {
+      name: 'Pixi Masking',
+      path: '/pixiMasking',
+      component: './PixiMasking',
+    },
   ],
 
   npmClient: 'pnpm',
