@@ -67,6 +67,11 @@ export default defineConfig({
       path: '/pixiTinting',
       component: './PixiTinting',
     },
+    {
+      name: 'Pixi Render Tree',
+      path: '/pixiRenderTree',
+      component: './PixiRenderTree',
+    },
   ],
 
   npmClient: 'pnpm',
