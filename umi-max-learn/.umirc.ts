@@ -77,6 +77,11 @@ export default defineConfig({
       path: '/pixiMasking',
       component: './PixiMasking',
     },
+    {
+      name: 'Pixi Graphics',
+      path: '/pixiGraphics',
+      component: './PixiGraphics',
+    },
   ],
 
   npmClient: 'pnpm',
