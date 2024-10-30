@@ -82,6 +82,11 @@ export default defineConfig({
       path: '/pixiGraphics',
       component: './PixiGraphics',
     },
+    {
+      name: 'Pixi Click',
+      path: '/pixiClick',
+      component: './PixiClick',
+    },
   ],
 
   npmClient: 'pnpm',
