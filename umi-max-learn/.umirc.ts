@@ -97,6 +97,11 @@ export default defineConfig({
       path: '/pixiBitmapText',
       component: './PixiBitmapText',
     },
+    {
+      name: 'Pixi Texture',
+      path: '/pixiTexture',
+      component: './PixiTexture',
+    },
   ],
 
   npmClient: 'pnpm',
