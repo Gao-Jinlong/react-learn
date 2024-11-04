@@ -102,6 +102,11 @@ export default defineConfig({
       path: '/pixiTexture',
       component: './PixiTexture',
     },
+    {
+      name: 'Pixi Blend',
+      path: '/pixiBlend',
+      component: './PixiBlend',
+    },
   ],
 
   npmClient: 'pnpm',
